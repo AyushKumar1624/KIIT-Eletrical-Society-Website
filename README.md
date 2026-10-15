@@ -14,7 +14,7 @@ npm run dev -- -p 3110
 
 - `lib/content.js` — all copy and data: nav, projects, events, team, gallery, contact, and the `MEDIA` registry (every image with its source file).
 - `app/page.js` — homepage sections: hero, about, domains, projects, events, team, gallery, contact.
-- `app/join/page.js` + `components/join/JoinFlow.js` — **Join KES**: KIIT institutional email → one-time code → five-step membership application. Email verification is connected (`app/api/join`, SMTP); application submission is not yet. Setup, environment variables and server rules: `docs/join-kes-integration.md` and `.env.example`. Developer preview: `npm run dev`, then `/join?preview=1`.
+- `app/join/page.js` + `components/join/JoinFlow.js` — **Join KES**: KIIT institutional email → one-time code → five-step membership application. Email verification (HttpOnly applicant cookie) and MongoDB application storage are connected; applications open only while a recruitment cycle is open (`npm run recruitment:cycle`). Setup, environment variables and server rules: `docs/join-kes-integration.md` and `.env.example`. Developer preview: `npm run dev`, then `/join?preview=1`.
 - `app/portal/**/*.demo.js` — the member portal, kept for future development with fictional, browser-local records; see `docs/member-portal-phase-1.md`. Not publicly reachable.
 - `app/portal/**/*.prod.js` — what every `/portal` address serves: a short noindex "not available" page pointing to Join KES (`components/PortalUnavailable.js`).
 
@@ -65,7 +65,7 @@ Reduced motion (the OS setting) turns all of this off: no loading screen, no rev
 
 Anything that still needs replacing or confirming is marked `temporary: true` in `lib/content.js`:
 
-- `JOIN`: email verification works once `JOIN_SECRET` and SMTP settings are configured; application submission still needs a destination (`docs/join-kes-integration.md`). The member portal is withdrawn from public view.
+- `JOIN`: email verification works once secrets, origins, a shared store and SMTP settings are configured; applications are stored in MongoDB (replica set required) once a recruitment cycle is opened; notification emails are queued but no worker sends them yet (`docs/join-kes-integration.md`). The member portal is withdrawn from public view.
 - `PROJECTS`: four project streams from real events; individual write-ups, teams and photos are still to come.
 - `TEAM` / `FACULTY`: confirmed office bearers and faculty only. Dr. Shubhasri Kundu is Faculty In Charge; Dr. Manoj Kumar Maharana is Founding Faculty.
 - `PROJECTS`: individual project titles, teams and results.
@@ -82,6 +82,14 @@ npm run build
 npm run start -- --port 3001
 ```
 
-Then open `http://localhost:3001/` and `/join`. Without `JOIN_SECRET` and SMTP settings the join page says online applications aren't open yet (`npm run dev` instead prints codes to the server console); `/portal` shows the "not available" page. To review every join step, use `npm run dev` and open `/join?preview=1`. In another terminal, run `node scripts/audit-site.mjs http://localhost:3001` to check local page routes, registered assets and linked CSS/fonts.
+Then open `http://localhost:3001/` and `/join`. Without `JOIN_SECRET` and SMTP settings the join page says online applications aren't open yet (console-code delivery requires explicit development configuration); `/portal` shows the "not available" page. To review every join step, use `npm run dev` and open `/join?preview=1`. In another terminal, run `node scripts/audit-site.mjs http://localhost:3001` to check local page routes, registered assets and linked CSS/fonts.
 
 See `docs/verification.md` for the responsive/accessibility audit and exact remaining content and integration requirements. Set `NEXT_PUBLIC_SITE_URL` to the approved public address before a future release; no deployment is part of this work.
+
+## Backend Phase 1
+
+MongoDB-backed administrator authentication and atomic Join email verification are implemented. Copy `.env.example` to `.env.local`, supply approved database/SMTP credentials, origins and independent secrets, then run `npm run backend:setup` and the interactive `npm run admin:provision` in a private terminal. Start locally with `npm run dev -- --port 3110`.
+
+[Backend setup and contracts](docs/backend-phase-1.md) documents collections/indexes, secure cookies, expiry/revocation, recovery, proxy trust, APIs and exact external configuration. `npm test`, `npm run test:mongo`, `npm run lint` and `npm run build` cover the implementation. The Mongo suite uses an isolated temporary local database and never touches the configured application database.
+
+Application submission/review persistence remains unavailable. The Member Portal stays postponed. No production administrator, external service or deployment is created by installing or building this repository.

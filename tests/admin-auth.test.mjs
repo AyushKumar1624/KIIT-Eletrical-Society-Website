@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { adminAuth, createAdminAuthService, validateCredentials } from "../lib/admin/auth.mjs";
+import { createAdminAuthService, validateCredentials } from "../lib/admin/auth.mjs";
 
 test("unconnected admin service never authenticates, ends a session or claims recovery delivery", async () => {
+  const adminAuth = createAdminAuthService(null);
   assert.deepEqual(await adminAuth.getSession(), { status: "unavailable" });
   assert.deepEqual(await adminAuth.signIn({ email: "admin@example.test", password: "test input only" }), { status: "unavailable" });
   assert.deepEqual(await adminAuth.logout(), { status: "unavailable" });

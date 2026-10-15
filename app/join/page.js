@@ -1,7 +1,7 @@
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import JoinFlow from "@/components/join/JoinFlow";
-import { verificationStatus } from "@/lib/join/server/index.mjs";
+import { verificationStatus, applicationReadiness } from "@/lib/join/server/index.mjs";
 import "./join.css";
 
 export const metadata = {
@@ -10,13 +10,14 @@ export const metadata = {
   alternates: { canonical: "/join" },
 };
 
-// Rendered per request so the page reflects the server's current email settings.
+// Rendered per request so the page reflects the current email settings and recruitment cycle.
 export const dynamic = "force-dynamic";
 
 // /join?preview=1 opens the developer preview, on the development server only.
 export default async function JoinPage({ searchParams }) {
   const preview = process.env.NODE_ENV === "development" && (await searchParams)?.preview === "1";
-  const status = { verification: verificationStatus().ready, applications: false };
+  const verification = verificationStatus().ready;
+  const status = { verification, applications: verification && await applicationReadiness() };
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>

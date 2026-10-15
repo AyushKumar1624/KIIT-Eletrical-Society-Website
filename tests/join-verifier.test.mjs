@@ -26,7 +26,7 @@ test("sends a 6-digit code only to eligible addresses, and never stores it in pl
   assert.equal(r.status, "sent");
   assert.equal(sent[0].to, "student@kiit.ac.in");
   assert.match(sent[0].code, /^\d{6}$/);
-  const challenge = await store.get("join:challenge:student@kiit.ac.in");
+  const challenge = await store.get("join:v2:challenge:student@kiit.ac.in");
   assert.ok(!JSON.stringify(challenge).includes(sent[0].code));
 });
 
@@ -106,7 +106,7 @@ test("tokens: tampering, expiry and other secrets are rejected", async () => {
 test("a failed send leaves no usable code", async () => {
   const { verifier, store } = setup({ send: async () => { throw new Error("SMTP down"); } });
   await assert.rejects(verifier.requestCode("student@kiit.ac.in"));
-  assert.equal(await store.get("join:challenge:student@kiit.ac.in"), null);
+  assert.equal(await store.get("join:v2:challenge:student@kiit.ac.in"), null);
 });
 
 test("the email states the code, expiry and the no-password promise", () => {

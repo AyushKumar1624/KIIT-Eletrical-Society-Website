@@ -1,8 +1,9 @@
 "use client";
 
 // Join KES: institutional email → one-time code → stepped application.
-// Frontend only. Services come from lib/join/service.js; without one, the page
-// says so plainly and never claims a code was sent or an application received.
+// Services come from lib/join/service.js; without one, the page says so plainly
+// and never claims a code was sent or an application received. Verification is
+// an HttpOnly cookie the page cannot read; answers live only in memory.
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -15,7 +16,6 @@ import {
 } from "@/lib/join/application.mjs";
 import { getJoinService } from "@/lib/join/service";
 
-const DRAFT_KEY = "kes-join-draft";
 // Build-time constant: production bundles drop every developer-preview branch.
 const DEV_PREVIEW = process.env.NODE_ENV === "development";
 const LAST = STEPS.length - 1;
@@ -24,38 +24,20 @@ const INSTAGRAM = CONTACT.social.find(s => s.label === "Instagram")?.url;
 
 const MSG = {
   noService: "Online applications aren’t open yet. Email verification isn’t connected to this website, so codes can’t be sent right now.",
-  noSubmission: "You can verify your email and prepare your application now. Sending applications online isn’t connected yet, so the form can’t be submitted until it is.",
+  noSubmission: "Applications aren’t open for submission right now. You can verify your email and prepare your answers, but the form can’t be submitted until recruitment opens.",
   sendUnavailable: "No code was sent: email verification isn’t connected to this website yet.",
   sendError: "We couldn’t send a code just now. Check your connection and try again.",
   verifyUnavailable: "Your code couldn’t be checked: email verification isn’t connected to this website yet.",
   verifyError: "We couldn’t check your code just now. Please try again.",
-  submitUnavailable: "Your application wasn’t sent: the application service isn’t connected to this website yet. Your answers are kept in this browser tab.",
+  submitUnavailable: "Your application wasn’t sent: the application service is unavailable right now. Your answers are kept on this page — please try again shortly.",
+  submitClosed: "Your application wasn’t sent: applications for this recruitment cycle are closed. Your answers are kept on this page.",
   submitError: "We couldn’t submit your application. Check your connection and try again — your answers are kept.",
   submitDuplicate: "An application from this email address has already been received. KES will contact you about the next steps.",
   submitReverify: "Your email verification has expired. Verify your email again — your answers are kept.",
 };
 
-// Answers survive a reload within this tab. Confirmations and verification never do.
-function loadDraft() {
-  if (typeof window === "undefined") return EMPTY_APPLICATION;
-  try {
-    const saved = JSON.parse(window.sessionStorage.getItem(DRAFT_KEY) || "null");
-    return saved ? { ...EMPTY_APPLICATION, ...saved, confirmAccurate: false, consentContact: false } : EMPTY_APPLICATION;
-  } catch {
-    return EMPTY_APPLICATION;
-  }
-}
-function saveDraft(values) {
-  try {
-    const draft = {};
-    for (const k of Object.keys(EMPTY_APPLICATION)) if (k !== "confirmAccurate" && k !== "consentContact") draft[k] = values[k];
-    window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  } catch { /* storage unavailable: answers stay in memory */ }
-}
-function clearDraft() {
-  try { window.sessionStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
-}
-
+// Answers are kept in memory only, never in browser storage: a reload starts
+// a fresh form. They survive errors and re-verification on this page.
 const clock = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 const focusById = id => requestAnimationFrame(() => document.getElementById(id)?.focus());
 const fieldId = field => field === "domains" ? `join-domain-${DOMAIN_GROUPS[0].options[0].key}` : `join-${field}`;
@@ -79,12 +61,12 @@ export default function JoinFlow({ preview = false, status = {} }) {
   const [code, setCode] = useState("");
   const [codeError, setCodeError] = useState("");
   const [verifying, setVerifying] = useState(false);
-  const [verified, setVerified] = useState(null); // { email, token }
+  const [verified, setVerified] = useState(null); // { email } — the credential is an HttpOnly cookie
 
   const [step, setStep] = useState(0);
   const [furthest, setFurthest] = useState(0);
   const [returnToReview, setReturnToReview] = useState(false);
-  const [values, setValues] = useState(loadDraft);
+  const [values, setValues] = useState(EMPTY_APPLICATION);
   const [errors, setErrors] = useState({});
   const [announce, setAnnounce] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -102,7 +84,8 @@ export default function JoinFlow({ preview = false, status = {} }) {
     return () => { live = false; };
   }, [preview, verificationReady, applicationsReady]);
 
-  useEffect(() => { saveDraft(values); }, [values]);
+  // Clear any draft an earlier version of this page left in sessionStorage.
+  useEffect(() => { try { window.sessionStorage.removeItem("kes-join-draft"); } catch { /* ignore */ } }, []);
 
   // Move focus to the new screen's heading after a step or phase change.
   useEffect(() => {
@@ -162,8 +145,8 @@ export default function JoinFlow({ preview = false, status = {} }) {
     setCodeError(""); setNotice(null); setVerifying(true);
     const res = await service.verifyCode(pendingEmail, code);
     setVerifying(false);
-    if (res.status === "verified" && res.token) {
-      setVerified({ email: pendingEmail, token: res.token }); setCode(""); setSubmitError(null);
+    if (res.status === "verified" && typeof res.email === "string") {
+      setVerified({ email: res.email }); setCode(""); setSubmitError(null);
       goPhase("form");
       return;
     }
@@ -244,11 +227,10 @@ export default function JoinFlow({ preview = false, status = {} }) {
       return;
     }
     setSubmitting(true); setSubmitError(null);
-    const res = await service.submitApplication(verified.token, toSubmission(values, verified.email));
+    const res = await service.submitApplication(toSubmission(values, verified.email));
     setSubmitting(false);
     if (res.status === "submitted") {
-      setResult({ reference: res.reference ?? null });
-      clearDraft();
+      setResult({ reference: typeof res.reference === "string" ? res.reference : null, submittedAt: typeof res.submittedAt === "string" ? res.submittedAt : null });
       goPhase("done");
     } else if (res.status === "invalid" && res.errors && typeof res.errors === "object") {
       const i = STEPS.findIndex(s => s.fields.some(f => res.errors[f]));
@@ -259,7 +241,7 @@ export default function JoinFlow({ preview = false, status = {} }) {
     } else if (res.status === "duplicate") {
       setSubmitError({ text: MSG.submitDuplicate });
     } else {
-      setSubmitError({ text: res.status === "unavailable" ? MSG.submitUnavailable : MSG.submitError });
+      setSubmitError({ text: res.status === "unavailable" ? (res.reason === "closed" ? MSG.submitClosed : MSG.submitUnavailable) : MSG.submitError });
     }
   }
 
@@ -273,7 +255,7 @@ export default function JoinFlow({ preview = false, status = {} }) {
   // ── Developer preview (development server only) ───────
   const previewAction = !DEV_PREVIEW ? null : action => {
     const demo = "preview.applicant@kiit.ac.in";
-    const ensureVerified = () => { if (!verified) setVerified({ email: demo, token: "preview-token" }); };
+    const ensureVerified = () => { if (!verified) setVerified({ email: demo }); };
     if (action === "fill") {
       setValues(v => ({ ...v, ...service.sample() })); setErrors({});
     } else if (action === "email") {
@@ -288,7 +270,7 @@ export default function JoinFlow({ preview = false, status = {} }) {
       setStep(i); setFurthest(f => Math.max(f, i)); setErrors({}); setSubmitError(null);
       goPhase("form");
     } else if (action === "done") {
-      ensureVerified(); setResult({ reference: "PREVIEW-0000" }); goPhase("done");
+      ensureVerified(); setResult({ reference: "KES-PREV-IEW0", submittedAt: new Date().toISOString() }); goPhase("done");
     }
   };
 
@@ -531,7 +513,13 @@ export default function JoinFlow({ preview = false, status = {} }) {
               Your application to {SOCIETY.name} has been received. KES will contact you at{" "}
               <strong className="join-email-chip">{verified?.email}</strong> about the next stage of recruitment.
             </p>
-            {result?.reference && <p className="join-reference">Reference <strong>{result.reference}</strong></p>}
+            {result?.reference && (
+              <p className="join-reference">
+                Reference <strong>{result.reference}</strong>
+                {result.submittedAt && <> · submitted <time dateTime={result.submittedAt}>{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date(result.submittedAt))} IST</time></>}
+              </p>
+            )}
+            <p className="join-fine">Keep this reference if you need to contact KES about your application. Applying is not membership: KES will contact you if you are selected.</p>
             <p className="join-fine">Applying does not guarantee selection. Thank you for your interest in building with us.</p>
             <div className="join-actions">
               <Link className="btn btn-brass join-primary" href="/">Back to the KES website</Link>

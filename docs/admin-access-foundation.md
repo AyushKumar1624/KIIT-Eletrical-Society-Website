@@ -1,5 +1,7 @@
 # KES administrator access foundation
 
+> Historical frontend foundation notes. Superseded by [Phase 1 backend](backend-phase-1.md): the default adapter now calls real server endpoints, backed by MongoDB sessions and Argon2id, with password recovery/reset and server guards. The remaining text records the earlier disconnected implementation.
+
 Frontend-only. No administrator accounts, authentication endpoints, signup, applicant API integration or deployment were created. Join KES registration and public Projects, Achievements, Events and leadership content were not modified.
 
 ## Run and routes

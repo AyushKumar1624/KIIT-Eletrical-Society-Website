@@ -52,7 +52,7 @@ export function AdminLogin({ previewAvailable = false }) {
     if (result.status === "authenticated") { router.replace("/admin/applications"); return; }
     if (result.status === "invalid") { setErrors(result.errors); emailRef.current?.focus(); return; }
     setMessage(result.status === "unavailable"
-      ? recovery ? "Password recovery is not connected yet. No reset email has been sent." : UNAVAILABLE_MESSAGE
+      ? recovery ? "Password recovery is currently unavailable. No reset email has been sent." : UNAVAILABLE_MESSAGE
       : result.status === "recovery-requested" ? "If this address is eligible, follow the recovery instructions provided by the authentication service."
       : recovery ? "Unable to request password recovery. Please try again." : "Unable to sign in. Check your details and try again.");
     requestAnimationFrame(() => messageRef.current?.focus());
@@ -62,8 +62,8 @@ export function AdminLogin({ previewAvailable = false }) {
     <section className="ka-intro" aria-label="KES administrator access"><Brand /><div><p className="ka-eyebrow">Administrator workspace</p><h2>A focused space.<br /><em>A shared purpose.</em></h2><p>Administrator access is separate from membership applications and the Member Portal.</p></div><p className="ka-intro-note">{SOCIETY.motto}</p></section>
     <div className="ka-form-area"><section className="ka-login-card" aria-labelledby="admin-login-title">
       <p className="ka-eyebrow">KIIT Electrical Society</p><h1 id="admin-login-title" ref={headingRef} tabIndex={-1}>{recovery ? "Forgot password?" : "Admin Login"}</h1>
-      <p className="ka-description">{recovery ? "Enter your administrator email to request account recovery when the service is connected." : "Sign in with your administrator account."}</p>
-      {access.status === "unavailable" && <p className="ka-service-note">Authentication service not connected. {recovery ? "Password recovery is unavailable." : "Sign-in is currently unavailable."}</p>}
+      <p className="ka-description">{recovery ? "Enter your administrator email to request account recovery." : "Sign in with your administrator account."}</p>
+      {access.status === "unavailable" && <p className="ka-service-note">Authentication is currently unavailable. {recovery ? "Password recovery is unavailable." : "Sign-in is currently unavailable."}</p>}
       {access.status === "loading" && <p role="status">Checking session…</p>}
       {access.status === "authenticated" && <p role="status">Opening administrator workspace…</p>}
       <form onSubmit={submit} method="post" noValidate aria-busy={busy}>

@@ -51,11 +51,13 @@ test("each step reports its own required fields", () => {
   for (const s of STEPS) assert.deepEqual(validateStep(s.id, complete, now), {}, s.id);
 });
 
-test("domains: technical only, non-technical only, or both; unknown keys don't count", () => {
+test("domains: technical only, non-technical only, or both; unknown or repeated keys are rejected", () => {
   assert.deepEqual(validateStep("domains", { ...complete, domains: ["robotics"] }, now), {});
   assert.deepEqual(validateStep("domains", { ...complete, domains: ["writing"] }, now), {});
   assert.deepEqual(validateStep("domains", { ...complete, domains: ["ai", "media"] }, now), {});
   assert.ok(validateStep("domains", { ...complete, domains: ["not-a-domain"] }, now).domains);
+  assert.ok(validateStep("domains", { ...complete, domains: ["robotics", "not-a-domain"] }, now).domains, "a mixed list is rejected");
+  assert.ok(validateStep("domains", { ...complete, domains: ["robotics", "robotics"] }, now).domains, "duplicates are rejected");
 });
 
 test("format rules: phone, optional link, motivation length, graduation range", () => {

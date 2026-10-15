@@ -1,83 +1,89 @@
-# Join KES — email verification and integration
+# Join KES — verification and application storage
 
-`/join` verifies that an applicant owns a KIIT institutional email with a one-time code, then collects a membership application.
+See [Phase 1 backend](backend-phase-1.md) for shared setup, secrets, origins, the OTP store and admin authentication. This document covers the Join flow end to end (Phase 2).
 
 | Part | State |
 | --- | --- |
-| Email verification | **Connected** — Next.js route handlers in `app/api/join/verification/*`, sending through SMTP. Live once the environment variables below are set. |
-| Application submission | **Not connected** — `app/api/join/applications` checks the verification token, then answers `unavailable`. The page tells applicants this up front. |
+| Email verification | Implemented (SMTP, MongoDB or Upstash challenge store). Success sets a short-lived HttpOnly applicant cookie. |
+| Application submission | **Implemented.** Strict validation, MongoDB persistence in a transaction with notification jobs, per-cycle uniqueness, idempotent retries. |
+| Recruitment cycle | Operator-controlled open/closed state with optional dates. `/join` accepts applications only while the current cycle is open. |
+| Notification delivery | **Not implemented.** Jobs are recorded as `pending`; no worker sends them yet. |
 
-Without configuration, production fails closed: the page says online applications aren't open and the API answers `503 unavailable`. Nothing is ever claimed as sent, verified or received.
+Production fails closed: missing configuration, an unreachable database or a closed cycle all show applications as not open and return `unavailable`.
 
-## Turning it on
+## Setup
 
-Set these where the site runs (`.env.local` for a local `next start`, or the hosting provider's environment settings). See `.env.example`.
+1. Configure the Phase 1 variables (`MONGODB_URI`, `MONGODB_DB`, `APP_ORIGINS`, `JOIN_SECRET`, SMTP, `JOIN_STORE`). **MongoDB must be a replica set or Atlas cluster**: submission uses a multi-document transaction. A standalone `mongod` rejects submissions (returns unavailable).
+2. `npm run backend:setup` — creates/updates validators and indexes, including the application collections. Re-run after upgrading.
+3. Open a recruitment cycle from a private terminal:
 
-| Variable | Required | Notes |
+```sh
+npm run recruitment:cycle -- open --id 2026-27 --closes 2026-11-05T23:59:00+05:30
+npm run recruitment:cycle -- status
+npm run recruitment:cycle -- close
+```
+
+`open` makes that cycle the single current one (a partial unique index enforces this); earlier cycles and their applications are kept. `--opens`/`--closes` are optional bounds checked on every request.
+
+`/join` is rendered per request. It shows the form as submittable only when verification is configured **and** the database answers **and** the current cycle is open. Working SMTP alone never opens applications.
+
+## Flow and contracts
+
+1. `POST /api/join/verification/request {email}` — unchanged (allowlist of 22 domains, exact match, rate limits).
+2. `POST /api/join/verification/confirm {email, code}` → `{status: "verified", email, expiresIn: 1800}` plus `Set-Cookie: __Host-kes-join=…; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=1800` (`kes-join` without `Secure` in development). The token is **not** in the JSON. The cookie name is separate from the admin session (`__Host-kes-admin`). Submission and confirmation both require the same origin; a cross-origin `NEXT_PUBLIC_JOIN_API_URL` will not carry the cookie and is unsupported.
+3. `POST /api/join/applications {application}`:
+
+| Response | HTTP | When |
 | --- | --- | --- |
-| `JOIN_SECRET` | Yes | 32+ random characters; signs codes and tokens. Changing it invalidates codes in flight. |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE` | Yes | Port 465 → `SMTP_SECURE=true`; port 587 → `false` (STARTTLS). |
-| `SMTP_USER`, `SMTP_PASS` | Usually | For Gmail/Google Workspace use an **App Password**, never the account password. |
-| `JOIN_EMAIL_FROM` | Yes | e.g. `KIIT Electrical Society <kiitelectricalsociety@gmail.com>`; must be an address the SMTP account may send as. |
-| `JOIN_EMAIL_REPLY_TO` | No | Reply address for the code email. |
-| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | On serverless | Shared store for codes and limits. **Required on Vercel or any multi-instance host** — in-memory storage is per instance there, so codes would fail to verify. |
+| `submitted {reference, submittedAt}` | 201 | Persisted, or an identical retry of an already-persisted submission |
+| `invalid {errors}` | 400 | Shape, type, size or content errors (`errors.form` for an unreadable payload) |
+| `unauthorized` | 401 | Missing, forged or expired verification, or `application.email` differs from the verified address |
+| `duplicate` | 409 | Same email or same roll number already applied in this cycle with different content |
+| `unavailable {reason: "closed"}` | 503 | No current cycle, closed, before `opensAt` or after `closesAt` |
+| `unavailable` | 503 | Not configured, database or transaction failure |
+| `error` | 403 | Cross-site or unapproved origin |
 
-`/join` reads the settings on each request, so no rebuild is needed after changing them; restart the server.
+A successful submission clears the applicant cookie.
 
-For heavy volume, a transactional provider (Resend, Brevo, Amazon SES, Postmark) over SMTP delivers more reliably than a personal Gmail account (about 500 messages a day). Set up SPF/DKIM for the sending domain to keep codes out of spam.
+### Validation (server)
 
-## How verification works
+`lib/join/server/submission.mjs` runs before the shared rules in `lib/join/application.mjs`:
 
-1. `POST /api/join/verification/request` `{ email }` — `checkInstitutionalEmail()` (exact allowlist), then a 6-digit code from `crypto.randomInt` is emailed. Only an HMAC of the code is stored, for 10 minutes. A new code replaces the old one.
-2. `POST /api/join/verification/confirm` `{ email, code }` — 5 guesses per code, counted atomically before comparison (timing-safe). A correct code is single-use and returns a signed token bound to the email, valid 30 minutes.
-3. `POST /api/join/applications` `{ token, application }` — the token must be valid and match `application.email`.
+- Body must be exactly `{application}`; the application may contain only `fullName, email, whatsapp, roll, school, programme, year, graduation, domains, motivation, skills, explore, link, confirmAccurate, consentContact`. Anything else, including `status`, `notes`, `history`, `role` or `reference`, is rejected.
+- Strings are type-checked and length-bounded before trimming; confirmations must be booleans and `true`; `domains` must be a non-empty array of known keys (`robotics, embedded, ai, web, design, media, outreach, events, writing`) with **no unknown or repeated entries**. The shared rule was corrected: previously one valid key plus an unknown one passed.
+- `link` is optional and must be `http(s)` without embedded credentials.
+- The stored email comes **only** from the verified cookie. A different `application.email` returns `unauthorized`.
 
-Limits: 60 s between codes to one address; 5 codes per address and 20 requests per client per hour. Cross-site browser requests (mismatched `Origin`) are rejected. The client address comes from `X-Forwarded-For`, so behind no proxy it can be spoofed; the per-address limits still apply.
+### Storage (`lib/join/server/applications.mjs`)
 
-No password is ever requested or accepted.
+| Collection | Contents | Indexes |
+| --- | --- | --- |
+| `recruitment_cycles` | `_id`, name, open, current, opensAt/closesAt, updatedAt | unique partial `current: true` |
+| `join_applications` | server `_id`, `reference`, `cycleId`, the 15 form fields (email from the session), `rollNormalized` (trimmed, upper-case), `digest`, `status: "New"`, empty notes/interview/messages, `version`, `submittedAt`, `history: [submitted]` | unique `(cycleId, email)`, unique `(cycleId, rollNormalized)`, unique `reference`, `(cycleId, submittedAt)` |
+| `notification_jobs` | `kind` (`applicant-acknowledgement`, `admin-new-application`), `applicationId`, `status: pending`, attempts, createdAt, availableAt | unique `(kind, applicationId)`, `(status, availableAt)` |
 
-### Responses
+The application and both jobs are written in one transaction: either all three exist or none do. References are random `KES-XXXX-XXXX` (Crockford base32), regenerated on the unlikely collision. JSON-schema validators restrict status and domain values and require both confirmations to be `true`.
 
-| Endpoint | `status` values |
-| --- | --- |
-| request | `sent` {resendAfter, expiresIn} · `ineligible` · `rate_limited` {retryAfter} (HTTP 429) · `unavailable` (503) · `error` |
-| confirm | `verified` {token} · `invalid` {attemptsLeft?} · `expired` · `locked` · `ineligible` · `unavailable` · `error` |
-| applications | `unauthorized` (401) · `unavailable` (503) — future: `submitted` {reference?} · `invalid` {errors} · `duplicate` |
+**Idempotency and concurrency.** The `digest` is a SHA-256 of the normalized submission. A resubmission from the same verified email with the same content returns the existing reference (network retry, double click, lost response). Different content, or the same roll number under another email, returns `duplicate`. The unique indexes are authoritative, so concurrent submissions cannot both be stored; a request that loses the race re-reads the winner and answers accordingly. A new cycle accepts the same applicant again and leaves earlier records untouched.
 
-## Connecting application submission (next step)
+## Frontend changes
 
-Implement it in `app/api/join/applications/route.js` after the token check:
+- `lib/join/service.js`: `verifyCode` expects `{email}`; `submitApplication(application)` sends no credential.
+- `components/join/JoinFlow.js`: opens the form on `verified` + email (no token); shows the server reference and submission time only after a `submitted` response; handles `unavailable {reason: "closed"}`.
+- **Automatic sessionStorage drafts were removed.** Answers live only in component memory: they survive validation, service errors and re-verification on the page, but not a reload. A leftover `kes-join-draft` from the old version is deleted on load. No credential is stored in browser storage.
+- The developer preview (`/join?preview=1`, dev server only) follows the new contract.
 
-1. Re-run `validateApplication()` on `body.application` and require both confirmations.
-2. Store or forward it (database, or an email to the recruitment inbox), refusing duplicates per email.
-3. Return `{ status: "submitted", reference }`.
-4. In `app/join/page.js`, set `applications: true` so the up-front notice disappears.
+Submitting an application does not create an account, grant membership or reveal community links. The confirmation says so.
 
-Submitting must not create a member account, grant membership or return community links.
+## Remaining setup and follow-up
 
-## Files
+1. A MongoDB replica set/Atlas cluster, `npm run backend:setup`, and an opened cycle (above).
+2. **Notification worker**: process `pending` jobs (acknowledgement to the applicant, alert to an administrator address that KES still has to choose), with retries/backoff and `sent`/`failed` states. Until then nobody is emailed about a submission.
+3. **Admin review persistence**: `/api/admin/applications` still returns unavailable after authorization; it should read `join_applications` and write review changes with the existing `version` for optimistic concurrency.
+4. Privacy wording, retention period and access policy for stored applications (approved by KES).
+5. Consider a per-IP/per-email submission rate limit if abuse appears; verification already gates every submission.
 
-| File | Role |
-| --- | --- |
-| `lib/join/eligibility.mjs` | Domain allowlist and `checkInstitutionalEmail()` (client and server). |
-| `lib/join/application.mjs` | Steps, options and validation (client and server). |
-| `lib/join/server/config.mjs` | Environment settings and limits. |
-| `lib/join/server/verifier.mjs` | Codes, attempts, rate limits and tokens. |
-| `lib/join/server/store.mjs` | In-memory or Upstash Redis store. |
-| `lib/join/server/mailer.mjs` | SMTP sender and the code email. |
-| `app/api/join/**/route.js` | HTTP endpoints. |
-| `lib/join/service.js` | Client calls to the endpoints (`NEXT_PUBLIC_JOIN_API_URL` overrides the base). |
-| `lib/join/preview-service.js` | Developer preview only; never bundled in production. |
-| `components/join/JoinFlow.js`, `app/join/*` | Interface and route. |
+## Checks
 
-## Development
-
-- `npm run dev` without SMTP settings: real codes are generated and **printed in the server console** (marked "no email was sent"); the page notes this. Production never does this.
-- `/join?preview=1` on the dev server: simulated service with a toolbar (available/unavailable/failing, jump to any screen, sample answers). Code `246810` verifies, `000000` is expired.
-- `npm test` covers the allowlist, form validation and the verifier (expiry, attempts, cooldowns, single use, token tampering).
-
-## Still to confirm with KES
-
-- The sending account and, ideally, a society domain for `JOIN_EMAIL_FROM`.
-- Where applications should go once submission is connected, and the wording of "How your details are used".
-- Year-of-study options and whether an official school/programme list should replace the free-text fields.
+- `npm test`: 12 Join application tests. They cover all 22 domains and lookalikes; missing, forged and expired verification; email substitution; unknown and client-controlled fields; wrong types; oversized values; empty, mixed and repeated domains; unsafe links; closed and date-bounded cycles; references and jobs; idempotent and whitespace-only retries; changed-content and same-roll duplicates; concurrent identical and conflicting submissions; database and job-creation failure; the cookie format and token absence; and the full HTTP envelope.
+- `npm run test:mongo`: on a temporary local replica set it checks the real indexes, the single current cycle, 12 parallel identical submissions sharing one record and reference, a roll-number race with exactly one winner, validator rejection of a client-style status, transaction rollback when the job insert fails, and a new cycle preserving history.
