@@ -1,0 +1,93 @@
+/* ================================================================
+   Layout & component system — applies the tokens in tokens.css.
+   Loaded last so these shared decisions win over the older,
+   section-by-section values in globals/premium/design.css.
+   ================================================================ */
+
+/* ── Content width, gutters, section rhythm ─────────── */
+.wrap { max-width: var(--content-max); padding-inline: var(--gutter); }
+.section { padding-block: var(--section-y) calc(var(--section-y) + var(--space-4)); }
+.section-head { margin-bottom: var(--section-head-gap); }
+.section-head--split { gap: var(--space-4) var(--space-9); }
+.section-head .kicker { margin-bottom: var(--space-4); }
+.section-note { max-width: 46ch; font-size: var(--text-base); line-height: var(--leading-body); }
+
+/* Reading measure for running text */
+:is(.about-body p, .ev-overview, .feature-summary, .register-text, .contact-text, .portal-text, .hero-lede, .work-purpose, .work-detail-body p) {
+  max-width: var(--content-text);
+}
+
+/* ── Type roles ─────────────────────────────────────── */
+/* Display serif is for major headings only. */
+:is(.hero-title, .section-title, .feature-title, .footer-display, .ledger-title, .impact-lead, .domain-group-title,
+  .register-main h3, .work-copy h3, .archive-card h4, .ev-name, .leader-name, .team-name, .principles h3, .domain-copy h4,
+  .feature-day h4, .alumni-name, .about-motto em) { font-family: var(--font-display); }
+:is(.section-title, .feature-title, .footer-display, .ledger-title) { letter-spacing: var(--track-display); line-height: var(--leading-tight); }
+
+/* Labels & metadata: readable sans, sentence case unless an eyebrow, modest tracking. */
+:is(.kicker, .overline, .feature-tag, .team-role, .register-origin, .work-origin, .archive-area, .ledger-date, .ledger-kind,
+  .ev-facts dt, .feature-facts dt, .hero-specs dt, .feature-day-label, .ev-block h5, .team-subhead, .domain-no, .domain-group-count,
+  .register-no, .method-step, .plate-head, .plate-label, .hero-visual-note, .about-motto span, .impact-item dt,
+  .gallery figcaption small, .lightbox-figure figcaption small, .team-photo figcaption small, .footer-mail span:first-child,
+  .brand-sub, .ev-time, .ev-photos figcaption, .contact-link-handle) {
+  font-family: var(--font-label); font-size: var(--text-xs); font-weight: var(--weight-semibold);
+  letter-spacing: var(--track-label); line-height: 1.45;
+}
+/* Only eyebrows stay in capitals; dates, numbers and metadata read in normal case. */
+:is(.ledger-date, .method-step, .plate-head, .ev-facts dt, .feature-facts dt, .hero-specs dt, .team-subhead,
+  .impact-item dt, .gallery figcaption small, .lightbox-figure figcaption small, .team-photo figcaption small,
+  .ev-block h5, .feature-day-label, .footer-mail span:first-child, .hero-visual-note, .register-origin, .work-origin,
+  .archive-area, .about-motto span, .brand-sub) { text-transform: none; }
+/* Faint secondary text gets enough contrast to read. */
+:is(.ev-meta, .ev-teaser, .register-text, .archive-text, .work-purpose, .alumni-org, .faculty-title, .principles p,
+  .domain-copy p, .plate p:last-child) { font-size: var(--text-base); }
+.ev-meta { font-size: var(--text-sm); }
+
+/* Navigation text */
+.nav-list a { font-size: var(--text-sm); font-weight: var(--weight-medium); letter-spacing: .01em; }
+.portal-link, .nav-toggle { font-size: var(--text-xs); letter-spacing: var(--track-label); }
+.btn { font-size: var(--text-sm); letter-spacing: .01em; }
+
+/* ── Cards & panels: one border, one radius, one padding ─ */
+:is(.work-card, .archive-card, .team-card, .plate) { border: var(--border-hair); border-radius: var(--radius-md); }
+:is(.archive-card, .team-card, .plate) { padding: var(--card-pad); }
+.work-copy { padding: var(--card-pad); }
+:is(.feature, .ev-detail) { border-radius: var(--radius-lg); }
+.ev-detail { padding: var(--card-pad); border: var(--border-on-dark); border-left: 2px solid var(--brass); }
+:is(.featured-work, .archive-grid, .gallery) { gap: var(--grid-gap); }
+:is(.work-image, .register-photo, .ledger-photo, .ev-photos figure, .gallery figure) { border-radius: var(--radius-md); }
+.lightbox-img { border-radius: var(--radius-md); }
+:is(.btn, .portal-link, .nav-toggle, .ledger-toggle, .ledger-more) { border-radius: var(--radius-sm); }
+
+/* Keep related content close: tighter internal stacks. */
+.work-copy h3 { margin: var(--space-2) 0 var(--space-3); }
+.work-detail { margin-top: var(--space-5); }
+.archive-card { gap: var(--space-2); }
+.leader { gap: var(--space-1); }
+.leaders { gap: var(--grid-gap); }
+.principles li { padding-block: var(--space-5); }
+.domain-row { padding-block: var(--space-5); }
+.ledger-hint { margin-top: var(--space-3); }
+.feature-more-body { gap: var(--space-7); }
+
+@media (max-width: 560px) {
+  .section { padding-block: var(--section-y) calc(var(--section-y) + var(--space-2)); }
+  .section-title { font-size: clamp(2.2rem, 10vw, 2.8rem); }
+}
+
+/* ── About: short intro + three reasons to join ─────── */
+.about-intro { font-size: var(--text-lg); line-height: 1.6; color: var(--ink); max-width: 60ch; }
+.reasons-title {
+  margin-top: var(--space-8); margin-bottom: var(--space-4);
+  font-family: var(--font-label); font-size: var(--text-sm); font-weight: var(--weight-semibold);
+  letter-spacing: var(--track-label); color: var(--brass-dark);
+}
+.reasons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--grid-gap); margin: 0; padding: 0; list-style: none; }
+.reason { padding-top: var(--space-4); border-top: 2px solid var(--brass); }
+.reason h4 { font-family: var(--font-display); font-weight: 500; font-size: var(--text-xl); line-height: var(--leading-snug); letter-spacing: -.01em; color: var(--green); }
+.reason p { margin-top: var(--space-2); font-size: var(--text-base); line-height: 1.65; color: var(--ink-soft); }
+.about-visual { margin-top: var(--space-9); }
+.about-visual figcaption { font-size: var(--text-sm); color: var(--ink-soft); }
+@media (max-width: 860px) {
+  .reasons { grid-template-columns: 1fr; gap: var(--space-5); }
+}

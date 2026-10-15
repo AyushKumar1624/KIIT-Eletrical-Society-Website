@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "kes-site", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "--", "-p", "3110"], "port": 3110 }
+  ]
+}

@@ -1,0 +1,278 @@
+/* ================================================================
+   KES design layer — loaded after premium.css.
+   Carries the landing page's language (serif display with brass
+   italic, arched frames, tilted prints, mono annotations) through
+   every section, and sets a readable type system.
+   ================================================================ */
+
+:root {
+  /* Type scale */
+  --fs-label: var(--text-xs);      /* mono annotations & labels — never smaller */
+  --fs-small: .875rem;
+  --fs-body: 1.0625rem;   /* 17px reading size */
+  --fs-lead: 1.125rem;
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --radius-arch: 140px 6px 6px 6px;
+  --shadow-print: 0 18px 40px rgb(11 35 31 / .22), 0 2px 6px rgb(11 35 31 / .12);
+}
+
+/* ── Reading type ─────────────────────────────────── */
+body { font-size: var(--fs-body); line-height: 1.75; font-feature-settings: "ss01", "cv11"; }
+p { text-wrap: pretty; }
+.about-body p, .register-text, .ev-teaser, .feature-summary, .archive-text,
+.method p, .contact-text, .portal-text, .ev-overview, .ev-step-d, .faculty-title { font-size: 1rem; line-height: 1.8; }
+.plate p:last-child, .principles p, .alumni-org { font-size: var(--text-base); line-height: 1.75; }
+.hero-lede { font-size: var(--fs-lead); line-height: 1.8; max-width: 44ch; }
+.section-note { font-size: 1rem; line-height: 1.8; max-width: 46ch; color: var(--ink-soft); }
+.panel-green .section-note, .panel-charcoal .section-note { color: #c4cdc6; }
+
+/* Mono labels: one legible size, generous tracking */
+.kicker, .overline, .plate-label, .feature-tag, .ledger-date, .plate-head, .team-role,
+.register-origin, .archive-area, .ev-facts dt, .feature-facts dt, .hero-specs dt,
+.feature-day-label, .ev-block h5, .team-subhead, .impact-item dt, .about-motto span,
+.hero-photo-caption > span, .hero-visual-note, .gallery figcaption small,
+.team-photo figcaption small, .ev-time, .register-no, .contact-link-handle {
+  font-size: var(--fs-label); letter-spacing: var(--track-label); font-weight: 500;
+}
+.brand-sub { font-size: var(--text-xs); }
+.nav-list a { font-size: var(--text-sm); letter-spacing: .01em; }
+.portal-link { font-size: var(--text-xs); }
+
+.ev-photos figcaption, .feature-criteria span { font-size: var(--text-xs); }
+
+/* Numbers line up */
+.hero-specs dd, .impact-item dd, .ledger-date, .register-no, .ev-time, .alumni-year { font-variant-numeric: tabular-nums lining-nums; }
+
+/* ── Display type ─────────────────────────────────── */
+.section-title { font-weight: 500; font-size: clamp(2.6rem, 5vw, 4.6rem); line-height: 1.02; letter-spacing: -.035em; }
+.section-title em { font-style: italic; font-weight: 400; color: var(--brass-dark); }
+.panel-green .section-title em, .panel-charcoal .section-title em, .contact .section-title em { color: var(--brass-light); }
+.section-head { position: relative; }
+.section-head .kicker { margin-bottom: 26px; }
+.principles h3, .plate h3, .register-main h3, .archive-card h4, .ev-name, .leader-name, .feature-title { letter-spacing: -.02em; }
+
+/* ── Rhythm ───────────────────────────────────────── */
+/* Slightly heavier bottom padding reads as optically balanced. */
+.section { padding: clamp(88px, 10vw, 144px) 0 clamp(100px, 11vw, 160px); }
+
+/* ── Buttons & links: tactile states ──────────────── */
+.btn, .portal-link, .ledger-toggle, .ledger-more { transition: background-color .25s var(--ease-out), color .25s var(--ease-out), border-color .25s var(--ease-out), transform .2s var(--ease-out); }
+.btn:active, .portal-link:active, .ledger-toggle:active, .ledger-more:active { transform: translateY(1px) scale(.985); }
+.btn-line:hover { background: rgb(225 197 149 / .06); }
+
+/* ── By the numbers ───────────────────────────────── */
+.impact { background: var(--parchment); border-bottom: 1px solid rgb(128 102 62 / .18); }
+.impact-inner { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; align-items: center; padding-top: clamp(48px, 6vw, 72px); padding-bottom: clamp(48px, 6vw, 72px); }
+.impact-lead { font-family: var(--font-serif); font-size: clamp(1.8rem, 2.6vw, 2.4rem); line-height: 1.05; color: var(--green); letter-spacing: -.02em; }
+.impact-lead em { display: block; color: var(--brass-dark); }
+.impact-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; }
+.impact-item { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 10px; padding: 4px 28px; border-left: 1px solid rgb(128 102 62 / .28); }
+.impact-item dd { margin: 0; font-family: var(--font-serif); font-size: clamp(2.4rem, 3.6vw, 3.4rem); line-height: 1; letter-spacing: -.03em; color: var(--green); }
+.impact-item dt { color: var(--ink-soft); line-height: 1.6; text-transform: none; font-family: var(--font-label); max-width: 24ch; }
+
+/* ── About: arched photo + tilted print (hero motif) ─ */
+.about-visual { position: relative; margin: 44px 0 0; padding: 0 0 36px 0; }
+.about-photo-main { height: clamp(280px, 30vw, 380px); border-radius: var(--radius-arch); overflow: hidden; border: 1px solid rgb(128 102 62 / .3); }
+.about-photo-main img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.88) sepia(.08); }
+.about-print {
+  position: absolute; left: -18px; bottom: 0; width: 150px; padding: 7px 7px 0; background: #fffdf8;
+  transform: rotate(-5deg); box-shadow: var(--shadow-print);
+}
+.about-print img { width: 100%; height: 118px; object-fit: cover; display: block; }
+.about-print span { display: block; padding: 6px 0 8px; text-align: center; font-family: var(--font-serif); font-style: normal; font-size: var(--text-base); color: var(--green); }
+.about-visual figcaption { position: absolute; right: 0; bottom: 6px; font-family: var(--font-serif); font-style: normal; font-size: var(--text-base); color: var(--ink-soft); }
+.about-photo { display: none; }
+
+/* ── Domains ──────────────────────────────────────── */
+.plate { position: relative; overflow: hidden; }
+.plate::after { content: ""; position: absolute; left: 24px; right: 24px; bottom: 0; height: 2px; background: var(--brass); transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease-out); }
+.plate:hover::after { transform: scaleX(1); }
+
+/* ── Projects ─────────────────────────────────────── */
+.register-photo { border-radius: 70px var(--radius-sm) var(--radius-sm) var(--radius-sm); }
+.register-row:hover .register-main h3 { color: var(--brass-dark); }
+.register-main h3 { transition: color .25s var(--ease-out); }
+.archive-card { background: var(--parchment); transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out); }
+.archive-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgb(16 47 41 / .08); }
+
+/* ── Events: year dividers + progressive list ─────── */
+.ev-item[hidden] { display: none; }
+.ev-year { display: flex; align-items: center; gap: 20px; margin: 44px 0 4px; }
+.ev-item:first-child .ev-year { margin-top: 18px; }
+.ev-year span { font-family: var(--font-serif); font-size: 2.6rem; line-height: 1; letter-spacing: -.03em; color: transparent; -webkit-text-stroke: 1px var(--brass); }
+.ev-year::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgb(225 197 149 / .45), transparent); }
+.ledger-more {
+  display: flex; align-items: center; justify-content: center; gap: 14px; width: 100%; margin-top: 28px; min-height: 56px;
+  background: transparent; color: var(--parchment); cursor: pointer; border: 1px dashed rgb(225 197 149 / .4); border-radius: var(--radius-sm);
+  font: 600 var(--text-xs)/1 var(--font-sans); letter-spacing: .04em;
+}
+.ledger-more:hover { border-style: solid; border-color: var(--brass); color: var(--brass-light); }
+.ledger-more .ev-toggle-icon { color: var(--brass); }
+.ledger-more .ev-toggle-icon[data-open="true"]::after { transform: translate(-50%, -50%) rotate(0deg); }
+.ev-summary .ledger-photo { border-radius: 56px var(--radius-sm) var(--radius-sm) var(--radius-sm); overflow: hidden; }
+
+/* ── Gallery ──────────────────────────────────────── */
+.gallery figure { border-radius: var(--radius-sm); }
+.gallery-item:first-child figure { border-radius: var(--radius-arch); }
+.gallery figcaption span { font-size: 1.3rem; letter-spacing: -.01em; }
+
+/* ── Footer statement ─────────────────────────────── */
+.footer-statement { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; padding: clamp(40px, 6vw, 72px) 0 clamp(36px, 5vw, 56px); }
+.footer-display { font-family: var(--font-serif); font-weight: 500; font-size: clamp(3rem, 8vw, 7rem); line-height: .95; letter-spacing: -.045em; color: var(--parchment); }
+.footer-display em { font-weight: 400; color: var(--brass-light); }
+.footer-mail { display: flex; flex-direction: column; gap: 6px; text-decoration: none; padding-bottom: 10px; border-bottom: 1px solid rgb(225 197 149 / .35); transition: border-color .25s var(--ease-out); }
+.footer-mail span:first-child { font-family: var(--font-label); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: none; color: var(--brass); }
+.footer-mail-address { font-family: var(--font-serif); font-size: clamp(1.3rem, 2vw, 1.7rem); color: var(--parchment); }
+.footer-mail:hover { border-color: var(--brass-light); }
+.footer-mail:hover .footer-mail-address { color: var(--brass-light); }
+
+/* The statement above already carries the motto. */
+.footer-base .footer-motto { display: none; }
+
+/* ── Scroll reveal ────────────────────────────────── */
+/* Content is visible by default, including if observers or animations fail. */
+.reveal-enter { animation: content-enter .65s var(--ease-out) var(--reveal-delay, 0ms) backwards; }
+@keyframes content-enter { from { opacity: .35; transform: translateY(16px); } }
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 1080px) {
+  .impact-inner { grid-template-columns: 1fr; gap: 28px; }
+  .impact-lead em { display: inline; }
+}
+@media (max-width: 860px) {
+  .impact-list { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; }
+  .impact-item:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .about-print { left: 8px; }
+}
+@media (max-width: 560px) {
+  :root { --fs-body: 1rem; --radius-arch: 90px 6px 6px 6px; }
+  .hero-lede { font-size: 1rem; }
+  .section-title { font-size: clamp(2.4rem, 11vw, 3rem); }
+  .impact-item { padding: 0 0 0 16px; }
+  .impact-item:nth-child(odd) { padding-left: 0; }
+  .impact-item dd { font-size: 2.2rem; }
+  .about-print { width: 120px; }
+  .about-print img { height: 92px; }
+  .about-visual figcaption { position: static; margin-top: 16px; text-align: right; }
+  .ev-year span { font-size: 2rem; }
+  .footer-statement { flex-direction: column; align-items: flex-start; }
+  /* Keep labels legible on phones (premium.css shrinks some below 8px). */
+  .hero-specs dt, .hero-visual-note, .strip span { font-size: var(--text-xs); letter-spacing: var(--track-label); }
+  .hero-bottom { font-size: var(--text-xs); }
+}
+/* Reduced motion (class set in layout.js; honours the OS setting) */
+html.reduce-motion .reveal-enter { animation: none; }
+
+/* ================================================================
+   Pass 2 — grouped domain index, full-width About plate, section seams
+   ================================================================ */
+
+/* ── About: text and principles side by side, plate below ── */
+.about-grid { align-items: start; }
+.about-visual { margin-top: clamp(56px, 7vw, 88px); padding: 0 0 0 0; }
+.about-photo-main { height: clamp(300px, 36vw, 480px); border-radius: 220px var(--radius-md) var(--radius-md) var(--radius-md); }
+.about-photo-main img { object-position: center 40%; }
+.about-print { left: auto; right: clamp(16px, 4vw, 56px); bottom: -34px; width: 176px; transform: rotate(4deg); }
+.about-print img { height: 138px; }
+.about-visual figcaption { position: static; margin-top: 18px; text-align: left; max-width: 60%; }
+
+/* ── Domains: two orderly lists ── */
+.domain-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8) clamp(40px, 6vw, 88px); align-items: start; }
+.domain-group-title {
+  padding-bottom: var(--space-3); margin-bottom: var(--space-2); border-bottom: var(--border-strong);
+  font-family: var(--font-display); font-weight: 500; font-size: var(--text-2xl); line-height: var(--leading-tight);
+  letter-spacing: var(--track-display); color: var(--green);
+}
+.domain-list { margin: 0; padding: 0; list-style: none; }
+.domain-list li + li { border-top: var(--border-hair); }
+.domain-row {
+  display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: var(--space-4); align-items: center;
+  padding: var(--space-4) var(--space-3); margin-inline: calc(var(--space-3) * -1);
+  border-radius: var(--radius-md); color: inherit; text-decoration: none;
+}
+.domain-glyph {
+  width: 48px; height: 48px; display: grid; place-items: center; border-radius: var(--radius-md);
+  background: var(--parchment); border: var(--border-hair); color: var(--green);
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+/* Fixed 1.6px strokes so every icon reads clearly at this size. */
+.domain-glyph .glyph { width: 34px; height: 34px; margin: 0; }
+.domain-glyph .glyph :is(path, rect, circle, line, polyline, ellipse) { vector-effect: non-scaling-stroke; stroke-width: 1.6px; }
+.domain-copy { display: grid; gap: var(--space-1); min-width: 0; }
+.domain-title { font-family: var(--font-display); font-weight: 500; font-size: var(--text-xl); line-height: var(--leading-snug); letter-spacing: -.01em; color: var(--green); }
+.domain-text { font-size: var(--text-base); line-height: 1.6; color: var(--ink-soft); max-width: 48ch; }
+.domain-go { font-size: var(--text-lg); color: var(--brass-dark); transition: transform .25s ease, color .25s ease; }
+
+/* Only rows that lead somewhere look and behave interactive. */
+.domain-row--link { cursor: pointer; transition: background-color .25s ease; }
+.domain-row--link:hover { background: rgb(255 253 247 / .75); }
+.domain-row--link:hover .domain-glyph { background: var(--green); border-color: var(--green); color: var(--brass-light); }
+.domain-row--link:hover .domain-title { color: var(--brass-dark); }
+.domain-row--link:hover .domain-go { transform: translateX(4px); color: var(--green); }
+.domain-row--link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; background: rgb(255 253 247 / .75); }
+.domain-row--link:focus-visible .domain-glyph { background: var(--green); color: var(--brass-light); }
+/* Linked work cards land below the fixed header. */
+.work-card { scroll-margin-top: 112px; }
+.work-card:target { box-shadow: 0 0 0 2px var(--brass); }
+.plates { display: none; }
+
+/* ── Seams between light and dark sections ── */
+.panel-green.section, .panel-charcoal.section { box-shadow: inset 0 1px 0 rgb(225 197 149 / .22); }
+.panel-charcoal.section::after, .panel-green.section:not(.hero)::after {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 260px; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 60% 100% at 50% 0%, rgb(225 197 149 / .07), transparent 70%);
+}
+
+/* Reveal also covers the new rows */
+
+@media (max-width: 860px) {
+  .domain-groups { grid-template-columns: 1fr; gap: var(--space-8); }
+  .about-print { width: 140px; bottom: -28px; }
+  .about-print img { height: 108px; }
+  .about-visual figcaption { max-width: 55%; }
+}
+@media (max-width: 560px) {
+  .domain-row { grid-template-columns: 44px minmax(0, 1fr) auto; gap: var(--space-3); }
+  .domain-glyph { width: 44px; height: 44px; }
+  .domain-glyph .glyph { width: 30px; height: 30px; }
+  .domain-title { font-size: var(--text-lg); }
+  .about-photo-main { border-radius: 120px var(--radius-md) var(--radius-md) var(--radius-md); }
+  .about-print { width: 112px; right: 8px; }
+  .about-print img { height: 84px; }
+  .about-visual figcaption { max-width: 58%; font-size: var(--text-sm); }
+}
+
+/* ── QA fixes ─────────────────────────────────────── */
+/* Event names are now h4 headings inside <summary> (document outline). */
+h4.ev-name { margin: 0; font-weight: 500; }
+/* Decorative "KES" stand-in for photo-less events: readable even if decorative. */
+.ledger-photo .ledger-mark { color: var(--brass); }
+/* Small text links get a comfortable hit area without changing their look. */
+.hero-bottom a, .footer-base a, .team-link { display: inline-flex; align-items: center; min-height: 44px; }
+/* Brand name: tight tracking was closing the word gaps ("KIITElectricalSociety"). */
+.brand-name { letter-spacing: -.01em; word-spacing: .12em; }
+/* Hero buttons keep labels on one line; on narrow phones they stack full width. */
+.hero-actions .btn { white-space: nowrap; }
+@media (max-width: 560px) {
+  .hero-actions .btn { flex: 1 1 auto; justify-content: space-between; }
+}
+/* Faculty cards were too narrow side by side below desktop (names broke per word). */
+@media (max-width: 1080px) {
+  .faculty-grid { grid-template-columns: 1fr; gap: 8px; }
+  .faculty { grid-template-columns: 150px minmax(0, 1fr); align-items: center; }
+}
+@media (max-width: 560px) {
+  .faculty { grid-template-columns: 112px minmax(0, 1fr); }
+}
+
+/* LinkedIn link under office-bearer cards */
+.leader-link {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; margin-top: 2px;
+  font-size: var(--text-sm); font-weight: 600; letter-spacing: .01em; color: var(--green); text-decoration: none;
+}
+.leader-link svg { color: var(--brass-dark); transition: color .25s ease; }
+.leader-link span:not(.leader-link-arrow) { border-bottom: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); transition: border-color .25s ease; }
+.leader-link-arrow { color: var(--brass-dark); transition: transform .25s ease; }
+.leader-link:hover span:not(.leader-link-arrow) { border-bottom-color: var(--green); }
+.leader-link:hover svg { color: var(--green); }
+.leader-link:hover .leader-link-arrow { transform: translate(2px, -2px); }
