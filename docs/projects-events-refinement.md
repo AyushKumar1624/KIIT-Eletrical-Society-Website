@@ -1,5 +1,7 @@
 # Projects and Events refinement — 15 October 2026
 
+Historical notes: the current 17-project catalogue supersedes the original member archive presentation. See project-showcase.md.
+
 ## Content and presentation
 
 Projects now separates four kinds of record: member projects, workshops/engineering challenges, event highlights, and creative work. The member section uses the 12 existing `ARCHIVE_PROJECTS` entries in a collapsible archive, preserving their titles, descriptions and tool lists. Their original categories remain in the detail views; the public domain labels use the current KES domain names.
@@ -8,9 +10,9 @@ Every card has a reserved image area, type/origin, title, domain, stage field, c
 
 The five existing documented records retain their `work-p-01`, `work-p-03`, `work-p-04`, `work-c-01` and `work-c-02` anchor IDs, preserving the domain links. Shared presentation data lives in `lib/showcase.mjs`; the scoped visual layer is `app/projects-events.css`.
 
-Events retains the four existing published past highlights and their source content. The archive now has clearer date/title/description hierarchy, readable year labels, visible Read event/Close details states, and a polite expansion-count announcement. Expand/collapse-all and event deep links retain native disclosure behaviour. No dates, participants, sponsors, registration destinations or upcoming announcements were added. KHAOS OF CIRCUIT 2.0 remains an unscheduled portal concept; no public schedule is implied.
+Events retains the four existing published past highlights and their source content. The archive now has clearer date/title/description hierarchy, readable year labels, visible Read event/Close details states, and a polite expansion-count announcement. Expand/collapse-all and event deep links retain native disclosure behaviour. No dates, participants, sponsors, registration destinations or upcoming announcements were added.
 
-## Verification
+## Historical verification
 
 - Checked expanded project cards and event details at 320, 390, 768 and 1440px. No document overflow, clipped metadata/headings, or broken loaded card images.
 - Checked the member-archive and individual-project disclosures using Enter; checked single-event expansion and expand/collapse-all counts (1 → 4 → 0).

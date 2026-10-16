@@ -3,9 +3,9 @@ html { scroll-behavior: auto; }
 .reveal-enter { animation: kes-enter 220ms ease-out; }
 @keyframes kes-enter { from { opacity: .88; transform: translateY(4px); } }
 .hero-copy, .hero-photo-main { animation: kes-enter 220ms ease-out; }
-.is-open .nav-list li, .is-open .portal-link { animation: none; }
+.is-open .nav-list li { animation: none; }
 .site-nav, .nav-scrim { transition: opacity 150ms ease, visibility 0s; }
-:is(.btn, .portal-link, .nav-list a, .team-link, .ledger-toggle, .lightbox-btn) {
+:is(.btn, .nav-list a, .team-link, .ledger-toggle, .lightbox-btn) {
   transition-duration: 150ms;
 }
 :is(.hero-photo-main > img, .portrait img, .about-print, .gallery img) {
@@ -28,46 +28,20 @@ body > main .plate::after { transition-duration: 180ms; }
 }
 .gallery figure:hover .gallery-open img, .gallery-open:focus-visible img { transform: none; }
 .team-link, .leader-link { display: inline-flex; align-items: center; min-height: 44px; }
-:is(.site-header, .panel-charcoal, .kp-sidebar) :focus-visible { outline: 2px solid var(--brass-light); outline-offset: 3px; }
-.kp-root :focus-visible { outline: 2px solid var(--kp-accent); outline-offset: 3px; }
-.kp-root .kp-sidebar :is(a,button):focus-visible { outline-color: var(--brass-light); }
-.kp-root .kp-sidebar { max-width: calc(100vw - 48px); overscroll-behavior: contain; transition-duration: 150ms; }
-.kp-root .kp-shell { transition: none; }
-.kp-root :is(.kp-main, .kp-modal, .kp-dropdown), .kp-toast { animation: kes-enter 180ms ease-out; }
-.kp-root .kp-skeleton { animation: none; background: var(--kp-surface-soft); }
-.kp-root .kp-id-card { transition-duration: 180ms; }
-.kp-root .kp-toolbar > *, .kp-root .kp-toolbar .kp-field, .kp-root .kp-demo-strip label { min-width: 0; max-width: 100%; }
-.kp-root .kp-toolbar :is(input, select), .kp-root .kp-demo-strip select { width: 100%; min-width: 0; }
-.kp-root :is(.kp-collapse, .kp-mobile-close, .kp-search-trigger) { min-width: 44px; min-height: 44px; }
-.kp-root .kp-calendar-item { min-height: 44px; }
+:is(.site-header, .panel-charcoal) :focus-visible { outline: 2px solid var(--brass-light); outline-offset: 3px; }
 
-@media (min-width: 1001px) {
-  /* A compact sidebar still names every destination without hover. */
-  .kp-root .kp-shell.kp-collapsed { --kp-sidebar-width: 180px; }
-  .kp-root .kp-collapsed .kp-sidebar nav a { justify-content: flex-start; padding-inline: 8px; gap: 8px; }
-  .kp-root .kp-collapsed .kp-sidebar nav a > span { display: block; }
-}
 @media (max-width: 1080px) {
   .leaders { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; }
   .leader, .leader:nth-child(1), .leader:nth-child(2) { grid-column: auto; }
 }
 @media (max-width: 760px) {
   .leaders { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
-  .kp-root .kp-toolbar .kp-field { flex-basis: 180px; }
-}
-@media (max-width: 900px) {
-  .kp-root .kp-project-heading > div:first-child { flex: none; }
-  .kp-root .kp-project-heading .kp-actions { flex: none; }
 }
 @media (max-width: 560px) {
   .gallery { grid-template-columns: minmax(0, 1fr); }
   .gallery-item--wide { grid-column: auto; }
   .gallery-item--wide .gallery-open { aspect-ratio: 4 / 3; }
   .gallery figcaption { min-height: 0; }
-  .kp-root .kp-demo-strip label { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; }
-  .kp-root .kp-demo-strip select { min-height: 44px; }
-  .kp-tabs { max-width: 100%; }
-  .kp-root .kp-project-card > footer { flex-wrap: wrap; }
 }
 @media (max-width: 380px) {
   .leaders { grid-template-columns: minmax(0, 1fr); max-width: 230px; }
@@ -86,7 +60,6 @@ body > main .plate::after { transition-duration: 180ms; }
   .domain-row--link:hover .domain-go, .leader-link:hover .leader-link-arrow,
   .work-card:hover .work-image img { transform: none !important; }
 }
-.kp-no-motion :is(.kp-btn:hover, .kp-project-card:hover) { transform: none; }
 html.reduce-motion .btn:hover, html.reduce-motion .leader:hover .portrait img,
 html.reduce-motion .faculty:hover .portrait img, html.reduce-motion .hero-photo-main:hover > img,
 html.reduce-motion .lightbox-btn:hover, html.reduce-motion .btn:hover .btn-arrow,

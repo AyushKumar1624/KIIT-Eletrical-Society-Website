@@ -13,7 +13,7 @@
 .section-note { max-width: 46ch; font-size: var(--text-base); line-height: var(--leading-body); }
 
 /* Reading measure for running text */
-:is(.about-body p, .ev-overview, .feature-summary, .register-text, .contact-text, .portal-text, .hero-lede, .work-purpose, .work-detail-body p) {
+:is(.about-body p, .ev-overview, .feature-summary, .register-text, .contact-text, .not-found-text, .hero-lede, .work-purpose, .work-detail-body p) {
   max-width: var(--content-text);
 }
 
@@ -45,7 +45,7 @@
 
 /* Navigation text */
 .nav-list a { font-size: var(--text-sm); font-weight: var(--weight-medium); letter-spacing: .01em; }
-.portal-link, .nav-toggle { font-size: var(--text-xs); letter-spacing: var(--track-label); }
+.nav-toggle { font-size: var(--text-xs); letter-spacing: var(--track-label); }
 .btn { font-size: var(--text-sm); letter-spacing: .01em; }
 
 /* ── Cards & panels: one border, one radius, one padding ─ */
@@ -57,7 +57,7 @@
 :is(.featured-work, .archive-grid, .gallery) { gap: var(--grid-gap); }
 :is(.work-image, .register-photo, .ledger-photo, .ev-photos figure, .gallery figure) { border-radius: var(--radius-md); }
 .lightbox-img { border-radius: var(--radius-md); }
-:is(.btn, .portal-link, .nav-toggle, .ledger-toggle, .ledger-more) { border-radius: var(--radius-sm); }
+:is(.btn, .nav-toggle, .ledger-toggle, .ledger-more) { border-radius: var(--radius-sm); }
 
 /* Keep related content close: tighter internal stacks. */
 .work-copy h3 { margin: var(--space-2) 0 var(--space-3); }
@@ -75,7 +75,7 @@
   .section-title { font-size: clamp(2.2rem, 10vw, 2.8rem); }
 }
 
-/* ── About: short intro + three reasons to join ─────── */
+/* ── About: short intro + three reasons to build together ─────── */
 .about-intro { font-size: var(--text-lg); line-height: 1.6; color: var(--ink); max-width: 60ch; }
 .reasons-title {
   margin-top: var(--space-8); margin-bottom: var(--space-4);

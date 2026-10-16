@@ -1,6 +1,6 @@
 # Engineering project showcase
 
-Implemented in the existing Next.js application without additional dependencies or a backend. Changes are limited to Projects, its catalogue, detail/image-viewer components and a development-only viewer test route. Existing typography, forest green, ivory and restrained gold are reused. No deployment was performed.
+Implemented in the existing Next.js application without additional dependencies or a backend. Changes are limited to Projects, its catalogue, detail/image-viewer components. Existing typography, forest green, ivory and restrained gold are reused. No deployment was performed.
 
 ## Public experience
 
@@ -42,12 +42,13 @@ Added:
 - components/projects/dialog.js — shared keyboard focus wrapping.
 - app/project-catalogue.css — scoped catalogue and dialog styles.
 - tests/projects-catalogue.test.mjs — six catalogue/content/gallery tests.
-- app/projects/viewer-preview/page.js and components/projects/ViewerPreview.js — development-only gallery exercise using clearly labelled logo fixtures, not project documentation; production returns 404 and excludes fixture code.
 - docs/project-showcase.md and docs/previews/project-*.jpg — implementation notes and rendered previews.
 
-Achievements, Events, leadership, Join KES, administrator functionality and authentication were not edited. Existing domain-to-work anchors still open the ancillary disclosure. No unrelated assets were removed.
+The public Events and leadership content was preserved. Join KES, authentication and administrator functionality were subsequently removed in the frontend-only cleanup. Existing domain-to-work anchors still open the ancillary disclosure. No unrelated assets were removed.
 
-## Verification
+## Historical showcase verification
+
+These checks describe the earlier showcase implementation. The isolated development viewer fixture has since been removed. See verification.md for current cleanup checks.
 
 - Lint, all 44 existing/new tests and production build passed. A concurrent high-worker build hit the machine's memory limit; the final build used process-local CIRCLE_NODE_TOTAL=2 (one Next worker), with no configuration-file change.
 - Exactly 17 unique titles/IDs, correct category assignments, derived counts, 20–30-word card copy, 150–250-word details and explicit unknown metadata are covered by tests.
@@ -59,4 +60,4 @@ Achievements, Events, leadership, Join KES, administrator functionality and auth
 - The public catalogue had no console errors/warnings before fixture testing. The deliberately missing fixture produced an expected image error only in the isolated development test. Fixture text and missing-image URL are absent from production output, and its generated route status is 404.
 - Existing navigation and domain documentation anchors were inspected; viewports were reset after testing.
 
-Run `npm run dev -- --port 3110`, then open http://localhost:3110/#projects. The optional viewer exercise is http://localhost:3110/projects/viewer-preview on the development server only.
+Run `npm run dev -- --port 3110`, then open http://localhost:3110/#projects.

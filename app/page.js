@@ -9,7 +9,7 @@ import BootSequence from "@/components/BootSequence";
 import ScrollFx from "@/components/ScrollFx";
 import GalleryGrid from "@/components/GalleryGrid";
 import {
-  SOCIETY, MEDIA, ABOUT, DOMAINS, METHOD, TEAM, TEAM_TERM, MENTORS, FOUNDING_FACULTY, ALUMNI, TEAM_PHOTO, GALLERY, CONTACT, JOIN,
+  SOCIETY, MEDIA, ABOUT, DOMAINS, METHOD, TEAM, TEAM_TERM, MENTORS, FOUNDING_FACULTY, ALUMNI, TEAM_PHOTO, GALLERY, CONTACT,
 } from "@/lib/content";
 
 // Responsive photo. `sizes` describes the rendered slot so the browser picks
@@ -282,10 +282,7 @@ export default function Home() {
               <p className="kicker"><span className="kicker-num">§ 07</span> Contact</p>
               <h2 id="contact-title" className="section-title">Bring curiosity. <em>We supply the components.</em></h2>
               <p className="contact-text">
-                Recruitment drives, workshops and event registrations are announced on the society’s official channels.
-              </p>
-              <p className="contact-join">
-                <a className="btn btn-brass" href={JOIN.href}>Apply to join KES <span aria-hidden="true" className="btn-arrow">→</span></a>
+                Workshops, events and society updates are announced on our official channels.
               </p>
               <address className="contact-office">{CONTACT.office}</address>
             </div>

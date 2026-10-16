@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Rule } from "@/components/Drawings";
-import { NAV, JOIN, SOCIETY, MEDIA, CONTACT } from "@/lib/content";
+import { NAV, SOCIETY, MEDIA, CONTACT } from "@/lib/content";
 
 export default function SiteFooter({ home = true }) {
   const href = id => (home ? `#${id}` : `/#${id}`);
@@ -28,7 +28,6 @@ export default function SiteFooter({ home = true }) {
           <nav aria-label="Footer">
             <ul>
               {NAV.map(n => <li key={n.id}><a href={href(n.id)}>{n.label}</a></li>)}
-              <li><a href={JOIN.href}>{JOIN.label}</a></li>
             </ul>
           </nav>
           <p className="footer-note">A student society under {SOCIETY.parent}.</p>
