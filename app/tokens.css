@@ -1,5 +1,5 @@
 /* ================================================================
-   KES design tokens — shared by the public website and the portal.
+   KES design tokens — for the public website.
    Every stylesheet reads these; change a value here, not in a component.
    ================================================================ */
 :root {

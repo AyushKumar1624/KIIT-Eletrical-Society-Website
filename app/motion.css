@@ -34,7 +34,6 @@
 
 /* Spacious hit areas without shrinking the editorial typography. */
 .brand { min-height: 44px; }
-.portal-link { min-height:44px; }
 .ledger-toggle { min-height: 44px; }
 .site-footer nav a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
 body:has(dialog[open]) { overflow:hidden; }

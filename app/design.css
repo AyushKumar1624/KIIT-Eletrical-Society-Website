@@ -19,8 +19,7 @@
 /* ── Reading type ─────────────────────────────────── */
 body { font-size: var(--fs-body); line-height: 1.75; font-feature-settings: "ss01", "cv11"; }
 p { text-wrap: pretty; }
-.about-body p, .register-text, .ev-teaser, .feature-summary, .archive-text,
-.method p, .contact-text, .portal-text, .ev-overview, .ev-step-d, .faculty-title { font-size: 1rem; line-height: 1.8; }
+.about-body p, .register-text, .ev-teaser, .feature-summary, .archive-text, .method p, .contact-text, .not-found-text, .ev-overview, .ev-step-d, .faculty-title { font-size: 1rem; line-height: 1.8; }
 .plate p:last-child, .principles p, .alumni-org { font-size: var(--text-base); line-height: 1.75; }
 .hero-lede { font-size: var(--fs-lead); line-height: 1.8; max-width: 44ch; }
 .section-note { font-size: 1rem; line-height: 1.8; max-width: 46ch; color: var(--ink-soft); }
@@ -36,7 +35,6 @@ p { text-wrap: pretty; }
 }
 .brand-sub { font-size: var(--text-xs); }
 .nav-list a { font-size: var(--text-sm); letter-spacing: .01em; }
-.portal-link { font-size: var(--text-xs); }
 
 .ev-photos figcaption, .feature-criteria span { font-size: var(--text-xs); }
 
@@ -56,8 +54,8 @@ p { text-wrap: pretty; }
 .section { padding: clamp(88px, 10vw, 144px) 0 clamp(100px, 11vw, 160px); }
 
 /* ── Buttons & links: tactile states ──────────────── */
-.btn, .portal-link, .ledger-toggle, .ledger-more { transition: background-color .25s var(--ease-out), color .25s var(--ease-out), border-color .25s var(--ease-out), transform .2s var(--ease-out); }
-.btn:active, .portal-link:active, .ledger-toggle:active, .ledger-more:active { transform: translateY(1px) scale(.985); }
+.btn, .ledger-toggle, .ledger-more { transition: background-color .25s var(--ease-out), color .25s var(--ease-out), border-color .25s var(--ease-out), transform .2s var(--ease-out); }
+.btn:active, .ledger-toggle:active, .ledger-more:active { transform: translateY(1px) scale(.985); }
 .btn-line:hover { background: rgb(225 197 149 / .06); }
 
 /* ── By the numbers ───────────────────────────────── */

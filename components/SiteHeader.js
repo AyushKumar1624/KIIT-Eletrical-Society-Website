@@ -2,9 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { NAV, JOIN, SOCIETY, MEDIA } from "@/lib/content";
+import { NAV, SOCIETY, MEDIA } from "@/lib/content";
 
 const DESKTOP_QUERY = "(min-width: 1281px)";
 
@@ -15,7 +13,6 @@ export default function SiteHeader({ home = true }) {
   const headerRef = useRef(null);
   const toggleRef = useRef(null);
   const firstLinkRef = useRef(null);
-  const pathname = usePathname();
 
   // On the homepage, link to in-page anchors; elsewhere, back to the homepage sections.
   const hrefFor = id => (home ? `#${id}` : `/#${id}`);
@@ -129,11 +126,6 @@ export default function SiteHeader({ home = true }) {
               </li>
             ))}
           </ul>
-          {/* .portal-link carries the shared header-action layout; .join-link the filled style. */}
-          <Link className="portal-link join-link" href={JOIN.href} aria-current={pathname === JOIN.href ? "page" : undefined} onClick={() => close()}>
-            {JOIN.label}
-            <span aria-hidden="true" className="join-link-arrow">→</span>
-          </Link>
         </nav>
       </div>
       <button type="button" className="nav-scrim" tabIndex={-1} aria-hidden="true" onClick={() => close()} />
