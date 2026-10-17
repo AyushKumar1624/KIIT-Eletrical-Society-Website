@@ -170,8 +170,41 @@
 .join-notice--info { background: rgb(181 154 105 / .14); border: 1px solid rgb(140 116 74 / .35); color: var(--ink); }
 .join-notice--error { background: rgb(154 43 28 / .07); border: 1px solid rgb(154 43 28 / .35); color: var(--join-error); }
 .join-notice--ok { background: rgb(24 59 50 / .07); border: 1px solid rgb(24 59 50 / .3); color: var(--green-deep); }
+.join-receipt {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--join-line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+  box-shadow: 0 4px 12px -2px rgba(16, 47, 41, 0.05);
+}
+.join-receipt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-family: var(--font-label);
+  font-size: var(--text-xs);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid rgb(41 42 38 / 0.1);
+}
+.join-receipt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(24, 59, 50, 0.1);
+  color: var(--green-deep);
+  font-weight: 600;
+}
 .join-reference { font-size: var(--text-sm); color: var(--ink-soft); }
-.join-reference strong { margin-left: 6px; color: var(--green-deep); font-variant-numeric: tabular-nums; }
+.join-reference strong { margin-left: 6px; color: var(--green-deep); font-size: var(--text-base); font-variant-numeric: tabular-nums; }
 
 /* ── Developer preview (dev server only) ── */
 .join-preview { grid-column: 1 / -1; padding: var(--space-3) var(--space-4); border: 1px dashed var(--brass-light); border-radius: var(--radius-sm); font-size: var(--text-sm); color: var(--parchment); background: rgb(7 23 19 / .35); }

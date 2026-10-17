@@ -16,8 +16,9 @@ const serif = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "6
 const sans = Manrope({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
 // Set NEXT_PUBLIC_SITE_URL to the live address when deploying so social cards
-// and canonical links resolve to absolute URLs.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+// and canonical links resolve to absolute URLs (falls back to Vercel production URL or localhost).
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
+  || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
 const SITE_TITLE = `${SOCIETY.name} — ${SOCIETY.motto}`;
 const DESCRIPTION = "KIIT Electrical Society (KES), a student community at KIIT, Bhubaneswar, connecting hands-on engineering, software, design and storytelling through learning and collaboration.";
 

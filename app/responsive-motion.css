@@ -1,5 +1,6 @@
 /* Content and navigation are usable immediately; motion only adds emphasis. */
-html { scroll-behavior: auto; }
+html:not(.reduce-motion) { scroll-behavior: smooth; }
+html.reduce-motion { scroll-behavior: auto !important; }
 .reveal-enter { animation: kes-enter 220ms ease-out; }
 @keyframes kes-enter { from { opacity: .88; transform: translateY(4px); } }
 .hero-copy, .hero-photo-main { animation: kes-enter 220ms ease-out; }

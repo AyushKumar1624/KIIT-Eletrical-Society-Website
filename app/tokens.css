@@ -52,7 +52,23 @@
   --stack-gap: var(--space-4);        /* between related items in a group */
   --grid-gap: clamp(16px, 2vw, 24px); /* between cards */
 
-  /* ── Surfaces ────────────────────────────────────── */
+  /* ── Core Palette (Engineering Warmth & Precision) ── */
+  --green: #102F29;
+  --green-deep: #0B231E;
+  --green-soft: #21493F;
+  --charcoal: #1E2220;
+  --charcoal-deep: #141816;
+  --brass: #B59A69;
+  --brass-light: #CDB78C;
+  --brass-bright: #E2CA9E;
+  --brass-dark: #80663E;
+  --parchment: #F7F5EF;
+  --parchment-deep: #EEECE3;
+  --stone: #B8BBAE;
+  --ink: #17362D;
+  --ink-soft: #55534B;
+
+  /* ── Surfaces & Elevation ─────────────────────────── */
   --card-pad: clamp(20px, 2.2vw, 28px);
   --card-pad-sm: var(--space-4);
   --radius-sm: 4px;   /* controls, chips, small images */
@@ -61,6 +77,9 @@
   --border-hair: 1px solid rgb(128 102 62 / .22);   /* card and divider lines on light */
   --border-strong: 1px solid rgb(128 102 62 / .45);
   --border-on-dark: 1px solid rgb(225 197 149 / .24);
+  --shadow-subtle: 0 4px 16px -4px rgb(16 47 41 / .06), 0 1px 3px rgb(16 47 41 / .04);
+  --shadow-elevated: 0 12px 32px -8px rgb(16 47 41 / .12), 0 2px 8px rgb(16 47 41 / .06);
+  --shadow-modal: 0 24px 64px -12px rgb(7 23 19 / .35), 0 4px 16px rgb(7 23 19 / .2);
 }
 
 /* Shared defaults that follow from the tokens. */

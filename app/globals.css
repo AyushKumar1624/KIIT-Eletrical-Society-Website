@@ -132,19 +132,21 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
 .brand-name { font-family: var(--font-serif); font-size: 1.32rem; font-weight: 600; letter-spacing: .01em; white-space: nowrap; color: var(--parchment); }
 .brand-sub { font-family: var(--font-serif); font-style: normal; font-size: var(--text-base); color: var(--brass-light); white-space: nowrap; }
 
-.site-nav { display: flex; align-items: center; gap: 28px; }
-.nav-list { display: flex; gap: clamp(14px, 1.6vw, 26px); }
+.site-nav { display: flex; align-items: center; gap: clamp(16px, 1.8vw, 32px); }
+.nav-list { display: flex; align-items: center; gap: clamp(8px, 1.2vw, 18px); list-style: none; margin: 0; padding: 0; }
 .nav-list a {
-  position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px;
-  font-size: var(--text-base); font-weight: 500; letter-spacing: .015em; text-decoration: none; color: var(--parchment);
+  position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 6px 4px;
+  font-size: var(--text-sm); font-weight: 500; letter-spacing: .015em; text-decoration: none; color: var(--parchment);
+  transition: color .2s ease;
 }
 .nav-list a::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 8px; height: 1px; background: var(--brass);
-  transform: scaleX(0); transform-origin: left; transition: transform .3s ease;
+  content: ""; position: absolute; left: 4px; right: 4px; bottom: 2px; height: 2px; background: var(--brass-light);
+  border-radius: 1px; transform: scaleX(0); transform-origin: center; transition: transform .25s ease;
 }
 .nav-list a:hover { color: var(--brass-light); }
-.nav-list a:hover::after, .nav-list a[aria-current]::after { transform: scaleX(1); }
-.nav-list a[aria-current] { color: var(--brass-light); }
+.nav-list a:hover::after { transform: scaleX(0.5); background: rgba(205, 183, 140, 0.4); }
+.nav-list a.is-active-link, .nav-list a[aria-current] { color: var(--brass-light); font-weight: 600; }
+.nav-list a.is-active-link::after, .nav-list a[aria-current]::after { transform: scaleX(1); background: var(--brass); }
 
 .portal-link {
   display: inline-flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 18px; white-space: nowrap;
@@ -159,7 +161,7 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
 .nav-toggle, .nav-scrim { display: none; }
 body.nav-locked { overflow: hidden; }
 
-@media (max-width: 1280px) {
+@media (max-width: 1000px) {
   .nav-toggle {
     display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; flex: none;
     background: none; border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); color: var(--parchment); cursor: pointer;

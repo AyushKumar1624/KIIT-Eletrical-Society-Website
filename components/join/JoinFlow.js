@@ -514,10 +514,16 @@ export default function JoinFlow({ preview = false, status = {} }) {
               <strong className="join-email-chip">{verified?.email}</strong> about the next stage of recruitment.
             </p>
             {result?.reference && (
-              <p className="join-reference">
-                Reference <strong>{result.reference}</strong>
-                {result.submittedAt && <> · submitted <time dateTime={result.submittedAt}>{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date(result.submittedAt))} IST</time></>}
-              </p>
+              <div className="join-receipt">
+                <div className="join-receipt-header">
+                  <span>Official Application Record</span>
+                  <span className="join-receipt-badge"><Check /> Verified Submission</span>
+                </div>
+                <p className="join-reference">
+                  Reference <strong>{result.reference}</strong>
+                  {result.submittedAt && <> · submitted <time dateTime={result.submittedAt}>{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date(result.submittedAt))} IST</time></>}
+                </p>
+              </div>
             )}
             <p className="join-fine">Keep this reference if you need to contact KES about your application. Applying is not membership: KES will contact you if you are selected.</p>
             <p className="join-fine">Applying does not guarantee selection. Thank you for your interest in building with us.</p>

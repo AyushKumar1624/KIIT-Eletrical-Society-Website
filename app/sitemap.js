@@ -1,7 +1,7 @@
 // Lists the public site only. URLs need the live address, so the sitemap is
 // empty until NEXT_PUBLIC_SITE_URL is set at deploy time.
 export default function sitemap() {
-  const site = process.env.NEXT_PUBLIC_SITE_URL;
+  const site = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null);
   if (!site) return [];
   const base = site.replace(/\/$/, "");
   return [

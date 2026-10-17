@@ -5,9 +5,25 @@ import ProjectMedia from "./ProjectMedia";
 import ProjectDetail from "./ProjectDetail";
 
 export function ProjectCard({ project, onOpen }) {
+  const tags = project.verifiedTechnologies?.length ? project.verifiedTechnologies : (project.legacyRecord?.stack || []);
   return <li id={`project-${project.id}`} className="kes-project-card"><button type="button" className="kes-project-card-button" aria-haspopup="dialog" aria-label={`Explore Project: ${project.title}`} aria-describedby={`purpose-${project.id}`} onClick={e => onOpen(project, e.currentTarget)}>
     <ProjectMedia image={project.coverImage} title={project.title} category={project.category} />
-    <span className="kes-project-card-body"><span className="kes-project-category">{project.categoryTitle}</span><span className="kes-project-card-title" role="heading" aria-level={3}>{project.title}</span><span className="kes-project-description" id={`purpose-${project.id}`}>{project.description}</span><span className="kes-project-card-action">Explore Project <span aria-hidden="true">↗</span></span></span>
+    <span className="kes-project-card-body">
+      <span className="kes-project-category">{project.categoryTitle}</span>
+      <span className="kes-project-card-title" role="heading" aria-level={3}>{project.title}</span>
+      <span className="kes-project-description" id={`purpose-${project.id}`}>{project.description}</span>
+      {tags.length > 0 && (
+        <span className="kes-project-tech-tags" aria-label="Technical stack">
+          {tags.slice(0, 3).map(tag => (
+            <span key={tag} className="kes-project-tech-tag">{tag}</span>
+          ))}
+          {tags.length > 3 && (
+            <span className="kes-project-tech-tag kes-project-tech-tag--more">+{tags.length - 3}</span>
+          )}
+        </span>
+      )}
+      <span className="kes-project-card-action">Explore Project <span aria-hidden="true">↗</span></span>
+    </span>
   </button></li>;
 }
 

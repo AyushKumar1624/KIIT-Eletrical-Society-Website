@@ -8,6 +8,8 @@ import Reveal from "@/components/Reveal";
 import BootSequence from "@/components/BootSequence";
 import ScrollFx from "@/components/ScrollFx";
 import GalleryGrid from "@/components/GalleryGrid";
+import SignalFlowHero from "@/components/SignalFlowHero";
+import KesTimeline from "@/components/KesTimeline";
 import {
   SOCIETY, MEDIA, ABOUT, DOMAINS, METHOD, TEAM, TEAM_TERM, MENTORS, FOUNDING_FACULTY, ALUMNI, TEAM_PHOTO, GALLERY, CONTACT, JOIN,
 } from "@/lib/content";
@@ -74,8 +76,13 @@ export default function Home() {
       <main id="main">
         {/* ── Hero ─────────────────────────────── */}
         <section className="hero panel-green" id="top" aria-labelledby="hero-title">
+          <SignalFlowHero />
           <div className="wrap hero-grid">
             <div className="hero-copy">
+              <div className="hero-badge">
+                <span className="hero-badge-dot" aria-hidden="true" />
+                <span>{SOCIETY.parent} · {SOCIETY.institutionShort}</span>
+              </div>
               <h1 id="hero-title" className="hero-title">
                 <span className="hero-line">{SOCIETY.motto.split(", ")[0]},</span>{" "}
                 <em className="hero-line">{SOCIETY.motto.split(", ")[1]}</em>
@@ -87,6 +94,15 @@ export default function Home() {
                 </a>
                 <a className="btn btn-line" href="#about">About KES <span aria-hidden="true">↗</span></a>
               </div>
+              <nav className="hero-quick-nav" aria-label="Quick directory">
+                <span className="hero-quick-label" aria-hidden="true">INDEX</span>
+                <ul className="hero-quick-list">
+                  <li><a href="#projects"><span className="hero-quick-num">17</span> Projects</a></li>
+                  <li><a href="#domains"><span className="hero-quick-num">04</span> Domains</a></li>
+                  <li><a href="#events">Timeline</a></li>
+                  <li><a href="/join" className="hero-quick-join">Recruitment ’26</a></li>
+                </ul>
+              </nav>
             </div>
 
             <figure className="hero-visual">
@@ -137,6 +153,7 @@ export default function Home() {
                         <>
                           <span className="domain-glyph" aria-hidden="true"><DomainGlyph name={d.key} /></span>
                           <span className="domain-copy">
+                            <span className="domain-plate-tag">§ {d.plate} · {d.group}</span>
                             <span className="domain-title">{d.title}</span>
                             <span className="domain-text">{d.text}</span>
                           </span>
@@ -176,6 +193,8 @@ export default function Home() {
 
 
             <EventArchive />
+
+            <KesTimeline />
 
             <div className="method-block">
               <h3 className="ledger-title">How an event runs <span>— the Kreative Kontrol format</span></h3>

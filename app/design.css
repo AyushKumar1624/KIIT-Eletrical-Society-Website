@@ -199,6 +199,7 @@ html.reduce-motion .reveal-enter { animation: none; }
 .domain-glyph .glyph { width: 34px; height: 34px; margin: 0; }
 .domain-glyph .glyph :is(path, rect, circle, line, polyline, ellipse) { vector-effect: non-scaling-stroke; stroke-width: 1.6px; }
 .domain-copy { display: grid; gap: var(--space-1); min-width: 0; }
+.domain-plate-tag { font-family: var(--font-label); font-size: var(--text-xs); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--brass-dark); font-weight: 500; }
 .domain-title { font-family: var(--font-display); font-weight: 500; font-size: var(--text-xl); line-height: var(--leading-snug); letter-spacing: -.01em; color: var(--green); }
 .domain-text { font-size: var(--text-base); line-height: 1.6; color: var(--ink-soft); max-width: 48ch; }
 .domain-go { font-size: var(--text-lg); color: var(--brass-dark); transition: transform .25s ease, color .25s ease; }
@@ -237,7 +238,7 @@ html.reduce-motion .reveal-enter { animation: none; }
   .domain-glyph .glyph { width: 30px; height: 30px; }
   .domain-title { font-size: var(--text-lg); }
   .about-photo-main { border-radius: 120px var(--radius-md) var(--radius-md) var(--radius-md); }
-  .about-print { width: 112px; right: 8px; }
+  .about-print { width: 112px; left: auto; right: 8px; }
   .about-print img { height: 84px; }
   .about-visual figcaption { max-width: 58%; font-size: var(--text-sm); }
 }
