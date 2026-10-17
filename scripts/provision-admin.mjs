@@ -13,20 +13,68 @@ async function hidden(question) {
   const rl = createInterface({ input: process.stdin, output: muted, terminal: true });
   try { return await rl.question(""); } finally { rl.close(); process.stdout.write("\n"); }
 }
+
 try {
-  if (!process.stdin.isTTY || !process.stdout.isTTY || process.argv.length > 2) throw new Error("Use an interactive terminal without credential arguments");
+  if (!process.stdin.isTTY || !process.stdout.isTTY || process.argv.length > 2) {
+    throw new Error(
+      "Interactive terminal required: process.stdin is not a TTY.\n" +
+      "Please execute 'npm run admin:provision' directly inside an interactive PowerShell or terminal window."
+    );
+  }
+
+  // Pre-flight: verify database connectivity and ensure an admin does not already exist
+  const { db } = await getDatabase();
+  await db.command({ ping: 1 });
+  await setupDatabase(db);
+  const accounts = db.collection(COLLECTIONS.admins);
+  if (await accounts.findOne({ role: "admin" })) {
+    throw new Error("An administrator account has already been provisioned in this database.");
+  }
+
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   let email, name;
-  try { email = (await rl.question("Administrator email: ")).trim().toLowerCase(); name = (await rl.question("Administrator display name: ")).trim(); } finally { rl.close(); }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254 || !name || name.length > 80) throw new Error("Invalid administrator details");
+  try {
+    email = (await rl.question("Administrator email: ")).trim().toLowerCase();
+    name = (await rl.question("Administrator display name: ")).trim();
+  } finally {
+    rl.close();
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+    throw new Error("Invalid or empty administrator email address.");
+  }
+  if (!name || name.length > 80) {
+    throw new Error("Invalid administrator display name (1–80 characters required).");
+  }
+
   const password = await hidden("Password (15–128 characters; hidden): ");
   const confirm = await hidden("Confirm password (hidden): ");
-  if (Object.keys(passwordErrors(password)).length || password !== confirm) throw new Error("Invalid password");
-  const { db } = await getDatabase(); await setupDatabase(db);
-  const accounts = db.collection(COLLECTIONS.admins);
-  if (await accounts.findOne({ role: "admin" })) throw new Error("Administrator already provisioned");
-  // A fixed unique bootstrap ID serializes simultaneous first-admin attempts.
-  await accounts.insertOne({ _id: "initial-admin", email, name, role: "admin", active: true, authVersion: 1, passwordHash: await hashPassword(password), createdAt: new Date() });
-  console.info("First administrator provisioned. Credentials were not printed.");
-} catch { safeLog("admin_provision_failed"); console.error("Provisioning failed. Check configuration, input requirements and whether an administrator already exists."); process.exitCode = 1; }
-finally { await closeDatabase(); }
+
+  if (password !== confirm) {
+    throw new Error("Passwords do not match.");
+  }
+  const errors = passwordErrors(password);
+  if (Object.keys(errors).length) {
+    throw new Error(errors.password || "Password does not meet length/complexity requirements.");
+  }
+
+  // Fixed unique bootstrap ID serializes simultaneous first-admin attempts
+  await accounts.insertOne({
+    _id: "initial-admin",
+    email,
+    name,
+    role: "admin",
+    active: true,
+    authVersion: 1,
+    passwordHash: await hashPassword(password),
+    createdAt: new Date(),
+  });
+
+  console.info("\n[✓] First administrator successfully provisioned. Credentials were not printed.");
+} catch (error) {
+  safeLog("admin_provision_failed");
+  console.error(`\n[✗] Provisioning failed: ${error?.message || "Unknown error"}`);
+  process.exitCode = 1;
+} finally {
+  await closeDatabase();
+}
