@@ -8,13 +8,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --conditions=react-server --test \"tests/**/*.test.mjs\"",
+    "test": "node --conditions=react-server --test tests",
     "backend:setup": "node --conditions=react-server --env-file-if-exists=.env.local scripts/backend-setup.mjs",
     "admin:provision": "node --conditions=react-server --env-file-if-exists=.env.local scripts/provision-admin.mjs",
     "test:mongo": "node scripts/test-mongo.mjs",
-    "recruitment:cycle": "node --conditions=react-server --env-file-if-exists=.env.local scripts/recruitment-cycle.mjs"
+    "recruitment:cycle": "node --conditions=react-server --env-file-if-exists=.env.local scripts/recruitment-cycle.mjs",
+    "jobs:process": "node --conditions=react-server --env-file-if-exists=.env.local scripts/process-jobs.mjs",
+    "content:migrate": "node --conditions=react-server --env-file-if-exists=.env.local scripts/migrate-content.mjs",
+    "verify:all": "node --conditions=react-server --env-file-if-exists=.env.local scripts/verify/run-all.mjs"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.2.2",
     "argon2": "^0.45.1",
     "mongodb": "^7.7.0",
     "next": "16.4.0",

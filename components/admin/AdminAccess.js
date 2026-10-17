@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SOCIETY } from "@/lib/content";
 import { adminAuth, UNAVAILABLE_MESSAGE, validateCredentials } from "@/lib/admin/auth.mjs";
-import { applicationsService } from "@/lib/admin/applications.mjs";
+import { applicationsService, connectedApplicationsService } from "@/lib/admin/applications.mjs";
 import ApplicationsReview from "./ApplicationsReview";
 
 function Brand() {
@@ -81,7 +81,7 @@ export function AdminLogin({ previewAvailable = false }) {
 
 export function AdminApplications() {
   const [access, setAccess] = useAdminSession();
-  if (access.status === "authenticated") return <AdminPanel session={access.session} onLoggedOut={() => setAccess({ status: "unauthenticated" })} />;
+  if (access.status === "authenticated") return <AdminPanel session={access.session} service={connectedApplicationsService} onLoggedOut={() => setAccess({ status: "unauthenticated" })} />;
   return <main id="admin-main" className="ka-access"><Brand /><section className="ka-access-card" aria-busy={access.status === "loading"}>
     <p className="ka-eyebrow">Administrator access</p><h1>{access.status === "loading" ? "Checking your session…" : access.status === "unauthenticated" ? "Sign in to continue." : "Service unavailable."}</h1>
     <p role="status">{access.status === "loading" ? "Please wait while administrator access is checked." : access.status === "unauthenticated" ? "An administrator session is required to open Applications." : UNAVAILABLE_MESSAGE}</p>
