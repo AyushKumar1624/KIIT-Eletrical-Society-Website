@@ -114,3 +114,14 @@ Two distinct roles govern the administrative workspace:
 - **PII Protection:** Applicant phone numbers and roll numbers are never logged in plaintext.
 - **Production Cache Headers:** All admin and applicant verification routes emit `Cache-Control: private, no-cache, no-store, must-revalidate` and `Pragma: no-cache` to ensure sensitive payloads are never cached by intermediate proxies or browser history.
 - **Robots & Indexing:** Admin routes and portal gates emit `X-Robots-Tag: noindex, nofollow`.
+
+---
+
+## 6. Applicant Privacy & Data Handling Statement
+
+All applicant data collected during recruitment cycles via `/join` is processed under strict institutional data-handling principles:
+- **Scope of Collection:** Student identification (Name, Roll Number, Academic Programme, Graduation Year), contact info (Institutional `@kiit.ac.in` Email, WhatsApp), and technical domain choices.
+- **Purpose Limitation:** Exclusively used for identity verification, domain evaluation, interview scheduling, and society communications.
+- **Access Restrictions:** Restricted to authorized domain leads and faculty advisors via role-based access control. Reviewers cannot access applicant submissions outside their assigned domain.
+- **Data Safeguards:** Stored in MongoDB Atlas with strict schema validators, encrypted at rest and in transit (TLS 1.3). Ephemeral OTP challenge digests expire automatically within 10 minutes via MongoDB TTL indexes.
+- **Public Isolation:** Applicant data is strictly isolated from public website content. Public endpoints (`/api/content/*`) return published society records only.

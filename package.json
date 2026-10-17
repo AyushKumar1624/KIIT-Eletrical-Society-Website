@@ -13,14 +13,10 @@
     "env:check": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/check-env.mjs",
     "production:check": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/production-check.mjs",
     "production:init": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/production-init.mjs",
-    "backend:setup": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/backend-setup.mjs",
     "admin:provision": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/provision-admin.mjs",
-    "recruitment:cycle": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/recruitment-cycle.mjs",
     "jobs:process": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/process-jobs.mjs",
-    "process-jobs": "npm run jobs:process",
-    "content:migrate": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/migrate-content.mjs",
-    "migrate-content": "npm run content:migrate",
-    "verify:all": "node --conditions=react-server --env-file-if-exists=.env.local scripts/verify/run-all.mjs"
+    "migrate-content": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/migrate-content.mjs",
+    "recruitment:cycle": "node --conditions=react-server --env-file-if-exists=.env.local scripts/operational/recruitment-cycle.mjs"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",

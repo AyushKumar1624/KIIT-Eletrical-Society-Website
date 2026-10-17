@@ -72,9 +72,6 @@ npm run migrate-content
 
 # Inspect or open/close recruitment application windows
 npm run recruitment:cycle status
-
-# Run automated smoke test scenarios (security, concurrency, OTP replay defense)
-npm run verify:all
 ```
 
 ---
@@ -98,21 +95,20 @@ npm run verify:all
 │   ├── notifications/    # Durable email jobs runner, retry scheduler, templates
 │   ├── projects/         # Authoritative 17-project catalogue data
 │   └── content.js        # Public society records, leadership, events, media registry
-├── scripts/              # Operational and verification automation
+├── scripts/              # Operational and development automation
 │   ├── operational/      # Production scripts (production-check, check-env, provision-admin, etc.)
-│   └── verify/           # Concurrency and security smoke check scenarios
+│   ├── dev-mongo.mjs     # In-memory MongoDB for local offline development
+│   └── test-mongo.mjs    # Real MongoDB replica set integration test runner
 ├── tests/                # Automated Node.js TAP test suite (82 specifications)
 └── docs/                 # Engineering, deployment, and security documentation
 ```
 
 For detailed team guidelines, see:
-- [Codebase Map & Handoff Guide](docs/architecture/CODEBASE_MAP.md)
+- [Codebase Map & Team Ownership](docs/architecture/CODEBASE_MAP.md)
 - [Architecture Overview](docs/architecture/README.md)
-- [Team Ownership & Boundaries](docs/architecture/OWNERSHIP.md)
 - [Local Development Workflow](docs/development/README.md)
 - [Production Deployment Guide](docs/deployment/README.md)
-- [Operational Runbook](docs/operations/README.md)
-- [Brevo Email DNS Authentication](docs/operations/BREVO_DNS_AUTHENTICATION.md)
+- [Operational Runbook & Brevo Setup](docs/operations/README.md)
 - [Security Architecture & Threat Model](docs/security/README.md)
 
 ---

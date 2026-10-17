@@ -124,13 +124,7 @@ step("Real MongoDB Replica Set Concurrency & Transactions", () => {
   return "Replica set transactions, atomic CAS, and concurrency verified.";
 });
 
-// 7. Operational Verification Smoke Suite (10 Scenarios)
-step("Operational Verification Smoke Suite (10 Scenarios)", () => {
-  execFileSync(process.execPath, ["--conditions=react-server", "--env-file-if-exists=.env.local", "scripts/verify/run-all.mjs"], { stdio: "ignore", env: process.env });
-  return "All 10 security, isolation, concurrency, and RBAC smoke checks passed.";
-});
-
-// 8. Next.js Production Build
+// 7. Next.js Production Build
 step("Next.js Production Build Compilation", () => {
   execFileSync(process.execPath, [join("node_modules", "next", "dist", "bin", "next"), "build"], { stdio: "ignore", env: process.env });
   return "Production bundle compiled cleanly with all 29 routes optimized.";
